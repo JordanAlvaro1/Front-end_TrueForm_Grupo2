@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { InicioIntermedio } from './inicio-intermedio/inicio-intermedio';
 import { Observable, timeout } from 'rxjs';
 import { EjercicioDTO, ProgresoDTO, RegistroEntrenamientoDTO, RutinaDTO, UsuarioDTO } from '../../model/trueform.model';
 import { RutinaService } from '../../servicios/rutina.service';
@@ -19,11 +20,11 @@ import {
 } from '../../model/funciones.model';
 import { ObjetivoDTO } from '../../model/trueform.model';
 
-type Vista = 'inicio'|'rutinas'|'calendario'|'progreso'|'ejercicios'|'recomendaciones'|'tips'|'glosario'|'chat'|'tecnica'|'perfil';
+type Vista = 'inicio'|'gestion'|'cambios'|'rutinas'|'calendario'|'progreso'|'ejercicios'|'recomendaciones'|'tips'|'glosario'|'chat'|'tecnica'|'perfil';
 
 @Component({
   selector:'app-espacio', standalone:true,
-  imports:[RouterLink, CommonModule,FormsModule,RouterLink,MatButtonModule],
+  imports:[RouterLink, CommonModule,FormsModule,MatButtonModule,InicioIntermedio],
   templateUrl:'./espacio.html',styleUrl:'./espacio.css'
 })
 export class Espacio implements OnInit {
@@ -80,7 +81,7 @@ export class Espacio implements OnInit {
   nuevaAgenda = {idRutina:0,fecha:this.hoy(),estado:'pendiente'};
   asignacion = {idEjercicio:0,series:3,repeticiones:10,descansoSegundos:60,diaSemana:'lunes',ordenEjercicio:1};
   readonly dias = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
-  readonly menu: Array<{vista:Vista;icono:string;nombre:string;grupo:string}> = [
+  private readonly menuBase: Array<{vista:Vista;icono:string;nombre:string;grupo:string}> = [
     {vista:'inicio',icono:'⌂',nombre:'Dashboard',grupo:'MI ESPACIO'},
     {vista:'rutinas',icono:'▤',nombre:'Mis rutinas',grupo:'MI ESPACIO'},
     {vista:'calendario',icono:'▦',nombre:'Calendario',grupo:'MI ESPACIO'},
@@ -93,6 +94,34 @@ export class Espacio implements OnInit {
     {vista:'tecnica',icono:'▷',nombre:'Técnica y videos',grupo:'APRENDIZAJE'},
     {vista:'perfil',icono:'◉',nombre:'Mi perfil',grupo:'CUENTA'}
   ];
+
+  // Los menús comparten las mismas vistas y servicios: no se elimina ninguna historia de usuario.
+  private readonly menuIntermedio: Array<{vista:Vista;icono:string;nombre:string;grupo:string}> = [
+    {vista:'inicio',icono:'⌂',nombre:'Panel intermedio',grupo:'NIVEL INTERMEDIO'},
+    {vista:'rutinas',icono:'▤',nombre:'Rutina personalizada',grupo:'NIVEL INTERMEDIO'},
+    {vista:'gestion',icono:'✎',nombre:'Crear / modificar rutina',grupo:'NIVEL INTERMEDIO'},
+    {vista:'progreso',icono:'↗',nombre:'Mi progreso',grupo:'NIVEL INTERMEDIO'},
+    {vista:'cambios',icono:'⇄',nombre:'Cambiar ejercicios',grupo:'NIVEL INTERMEDIO'},
+    {vista:'tips',icono:'☀',nombre:'Tips intermedios',grupo:'NIVEL INTERMEDIO'},
+    {vista:'tecnica',icono:'▷',nombre:'Técnica y videos',grupo:'NIVEL INTERMEDIO'},
+    {vista:'chat',icono:'◈',nombre:'Chat IA',grupo:'NIVEL INTERMEDIO'},
+    {vista:'calendario',icono:'▦',nombre:'Calendario',grupo:'FUNCIONES NUEVAS'},
+    {vista:'ejercicios',icono:'♡',nombre:'Ejercicios y favoritos',grupo:'FUNCIONES NUEVAS'},
+    {vista:'recomendaciones',icono:'✦',nombre:'Recomendaciones',grupo:'FUNCIONES NUEVAS'},
+    {vista:'glosario',icono:'A',nombre:'Glosario',grupo:'FUNCIONES NUEVAS'},
+    {vista:'perfil',icono:'◉',nombre:'Mi perfil',grupo:'CUENTA'}
+  ];
+  get menu(): Array<{vista:Vista;icono:string;nombre:string;grupo:string}> {
+    return this.nivel==='intermedio' ? this.menuIntermedio : this.menuBase;
+  }
+  private intermedioCargado = false;
+  rutinaEdicionId = 0;
+  rutinaEdicion = {nombreRutina:'',descripcion:'',fechaInicio:'',fechaFin:'',estado:'activa'};
+  rutinaNueva = {nombreRutina:'',descripcion:'',fechaInicio:this.hoy(),fechaFin:'',estado:'activa'};
+  ejercicioACambiar = 0;
+  ejercicioReemplazo = 0;
+  alternativasCambio: EjercicioDTO[] = [];
+  errorFormulario = '';
 
   ngOnInit(): void {
     const id = Number(localStorage.getItem('idUsuario'));
@@ -132,7 +161,8 @@ export class Espacio implements OnInit {
     });
   }
   recargarBase():void {
-    this.pedir('usuario',this.api.buscarUsuario(this.idUsuario),u=>{this.usuario=u;this.objetivoElegido=u.idObjetivo||0;});
+    this.intermedioCargado=false;
+    this.pedir('usuario',this.api.buscarUsuario(this.idUsuario),u=>{this.usuario=u;this.objetivoElegido=u.idObjetivo||0;if(this.vista==='inicio'&&this.nivel==='intermedio')this.cargarInicioIntermedio();});
     this.pedir('rutinas',this.apiRutinas.listarPorUsuario(this.idUsuario),r=>{this.rutinas=r; if(!this.rutinaSeleccionada && r.length){this.seleccionarRutina(r[0].idRutina);} });
     this.pedir('progresos',this.apiProgreso.listarPorUsuario(this.idUsuario),p=>this.progresos=p);
     this.pedir('registros',this.apiRegistros.listarPorUsuario(this.idUsuario),r=>this.registros=r);
@@ -140,12 +170,80 @@ export class Espacio implements OnInit {
   cambiarVista(v:Vista):void {this.vista=v;this.aviso='';this.menuMovil=false;this.cargarVista(v);}
   private cargarVista(v:Vista):void {
     if(v==='inicio'||v==='progreso')this.cargarInformes();
+    if(v==='inicio'&&this.nivel==='intermedio')this.cargarInicioIntermedio();
     if(v==='rutinas'){this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),r=>this.rutinaSemanal=r);this.cargarEjercicios();}
+    if(v==='gestion')this.cargarEjercicios();
+    if(v==='cambios'){this.cargarEjercicios();if(!this.rutinaSeleccionada && this.rutinas.length)this.seleccionarRutina(this.rutinas[0].idRutina);}
     if(v==='calendario')this.cargarCalendario();
     if(v==='ejercicios')this.cargarEjerciciosYFavoritos();
     if(v==='recomendaciones')this.cargarRecomendaciones();
     if(v==='tips')this.pedir('tips',this.funciones.tipsDelDia(),t=>this.tips=t);
     if(v==='perfil')this.pedir('objetivos',this.funciones.objetivos(),o=>this.objetivos=o);
+  }
+  private cargarInicioIntermedio():void {
+    if(this.intermedioCargado)return;
+    this.intermedioCargado=true;
+    this.cargarEjercicios();
+    this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),r=>this.rutinaSemanal=r);
+    this.pedir('calendario',this.funciones.calendario(this.idUsuario),r=>this.calendario=r);
+    this.pedir('resumenCalendario',this.funciones.resumenCalendario(this.idUsuario,this.hoy()),r=>this.resumenSemanal=r);
+    this.pedir('recomendacionProgreso',this.funciones.recomendacionProgreso(this.idUsuario),r=>this.recomendacionProgreso=r);
+    this.pedir('ajuste',this.funciones.ajusteRutina(this.idUsuario),r=>this.ajuste=r);
+    this.pedir('tips',this.funciones.tipsDelDia(),r=>this.tips=r);
+  }
+  editarRutina(id:number):void {
+    this.rutinaEdicionId=Number(id);
+    const r=this.rutinas.find(t=>t.idRutina===this.rutinaEdicionId);
+    if(r)this.rutinaEdicion={nombreRutina:r.nombreRutina,descripcion:r.descripcion||'',fechaInicio:r.fechaInicio,fechaFin:r.fechaFin||'',estado:r.estado};
+    this.errorFormulario='';
+  }
+  private validarRutina(d:{nombreRutina:string;fechaInicio:string;fechaFin:string;estado:string}):boolean {
+    if(!d.nombreRutina.trim() || d.nombreRutina.trim().length>150 || !d.fechaInicio || !d.estado.trim() || (d.fechaFin&&d.fechaFin<d.fechaInicio)){
+      this.errorFormulario='Indica nombre, estado y fecha de inicio válidos; la fecha final no puede ser anterior al inicio.';
+      return false;
+    }
+    this.errorFormulario='';return true;
+  }
+  crearRutinaIntermedia():void {
+    if(!this.validarRutina(this.rutinaNueva))return;
+    this.pedir('crearRutina',this.apiRutinas.crear({
+      idUsuario:this.idUsuario,nombreRutina:this.rutinaNueva.nombreRutina.trim(),descripcion:this.rutinaNueva.descripcion.trim(),
+      fechaInicio:this.rutinaNueva.fechaInicio,fechaFin:this.rutinaNueva.fechaFin||null,estado:this.rutinaNueva.estado.trim()
+    }),r=>{
+      this.aviso=`Rutina «${r.nombreRutina}» creada en PostgreSQL.`;
+      this.rutinaNueva={nombreRutina:'',descripcion:'',fechaInicio:this.hoy(),fechaFin:'',estado:'activa'};
+      this.pedir('rutinas',this.apiRutinas.listarPorUsuario(this.idUsuario),items=>{this.rutinas=items;this.seleccionarRutina(r.idRutina);});
+      this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),sem=>this.rutinaSemanal=sem);
+    });
+  }
+  guardarEdicionRutina():void {
+    const original=this.rutinas.find(r=>r.idRutina===this.rutinaEdicionId);
+    if(!original || !this.validarRutina(this.rutinaEdicion))return;
+    this.pedir('editarRutina',this.apiRutinas.actualizar({
+      ...original,nombreRutina:this.rutinaEdicion.nombreRutina.trim(),descripcion:this.rutinaEdicion.descripcion.trim(),
+      fechaInicio:this.rutinaEdicion.fechaInicio,fechaFin:this.rutinaEdicion.fechaFin||null,estado:this.rutinaEdicion.estado.trim()
+    }),r=>{
+      this.aviso=`Rutina «${r.nombreRutina}» modificada en PostgreSQL.`;
+      this.rutinas=this.rutinas.map(item=>item.idRutina===r.idRutina?r:item);
+      this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),sem=>this.rutinaSemanal=sem);
+    });
+  }
+  prepararCambio(id:number):void {
+    this.ejercicioACambiar=Number(id);this.ejercicioReemplazo=0;this.alternativasCambio=[];
+    const asignado=this.detalleRutina.find(e=>e.idRutinaEjercicio===this.ejercicioACambiar);
+    if(asignado)this.pedir('alternativasCambio',this.funciones.alternativas(asignado.idEjercicio),a=>this.alternativasCambio=a);
+  }
+  elegirAlternativa(id:number):void {this.ejercicioReemplazo=id;}
+  guardarCambioEjercicio():void {
+    const asignado=this.detalleRutina.find(e=>e.idRutinaEjercicio===this.ejercicioACambiar);
+    const reemplazo=this.ejercicios.find(e=>e.idEjercicio===Number(this.ejercicioReemplazo));
+    if(!asignado || !reemplazo || asignado.idEjercicio===reemplazo.idEjercicio)return;
+    if(!confirm(`¿Reemplazar «${this.nombreDeEjercicio(asignado.idEjercicio)}» por «${reemplazo.nombreEjercicio}»?`))return;
+    this.pedir('cambioEjercicio',this.funciones.modificarEjercicio({...asignado,idEjercicio:reemplazo.idEjercicio}),()=>{
+      this.aviso=`Ejercicio sustituido por «${reemplazo.nombreEjercicio}» y guardado en PostgreSQL.`;
+      this.seleccionarRutina(this.rutinaSeleccionada);
+      this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),r=>this.rutinaSemanal=r);
+    });
   }
   private cargarEjercicios():void {if(this.ejercicios.length)return;this.pedir('ejercicios',this.apiEjercicios.listar(),e=>this.ejercicios=e);}
   private cargarEjerciciosYFavoritos():void {
@@ -167,7 +265,7 @@ export class Espacio implements OnInit {
     this.pedir('ajuste',this.funciones.ajusteRutina(this.idUsuario),r=>this.ajuste=r);
   }
   seleccionarRutina(id:number):void {
-    this.rutinaSeleccionada=Number(id);this.detalleRutina=[];this.guiado=null;this.posicionGuia=0;
+    this.rutinaSeleccionada=Number(id);this.detalleRutina=[];this.guiado=null;this.posicionGuia=0;this.ejercicioACambiar=0;this.ejercicioReemplazo=0;this.alternativasCambio=[];
     if(this.rutinaSeleccionada) this.pedir('detalleRutina',this.funciones.ejerciciosDeRutina(this.rutinaSeleccionada),d=>this.detalleRutina=d);
   }
   asignar():void {
