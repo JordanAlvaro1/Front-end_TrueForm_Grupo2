@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueForm - Dashboard Avanzado</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body data-dashboard="avanzado">
+
+<header class="navbar">
+  <a href="../index.html" class="nav-logo">
+    <span class="logo-badge"><img src="../fotos/logo.jpeg" alt="TrueForm"></span>
+    TrueForm
+  </a>
+
+  <nav class="nav-links">
+    <a href="../index.html">Inicio</a>
+    <a href="login.html" class="btn-login">Cerrar Sesión</a>
+  </nav>
+</header>
+
+<main class="app-dashboard">
+
+  <aside class="app-sidebar">
+    <div class="profile-box">
+      <div class="profile-icon">
+        <i class="fa-solid fa-user-gear"></i>
+      </div>
+      <h3 id="nombreUsuario">Usuario</h3>
+      <p id="nivelUsuario">Nivel: Sin nivel</p>
+    </div>
+
+    <a class="side-link active" onclick="mostrarPanel('inicio', this)">
+      <i class="fa-solid fa-house"></i> Dashboard
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('progresion', this)">
+      <i class="fa-solid fa-arrow-trend-up"></i> Plan de progresión
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('comparar', this)">
+      <i class="fa-solid fa-chart-simple"></i> Comparar rendimiento
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('historial', this)">
+      <i class="fa-solid fa-clock-rotate-left"></i> Historial físico
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('volumen', this)">
+      <i class="fa-solid fa-sliders"></i> Ajustar volumen
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('tecnica', this)">
+      <i class="fa-solid fa-brain"></i> Optimizar técnica
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('videos', this)">
+      <i class="fa-solid fa-circle-play"></i> Videos
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('chat', this)">
+      <i class="fa-solid fa-robot"></i> Chat IA
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('exportar', this)">
+      <i class="fa-solid fa-file-export"></i> Exportar progreso
+    </a>
+  </aside>
+
+  <section class="app-content">
+    <h1 id="tituloPanel">Panel Avanzado</h1>>
+      <p class="app-subtitle" id="subtituloPanel">
+        Optimiza tu rendimiento con progresiones, métricas e historial detallado.
+      </p>
+
+    <div id="panelContenido">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fa-solid fa-dumbbell"></i>
+          <h3>18</h3>
+          <p>Sesiones completadas</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+          <h3>78%</h3>
+          <p>Progresión mensual</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-fire"></i>
+          <h3>14</h3>
+          <p>Días de racha</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-chart-column"></i>
+          <h3>6</h3>
+          <p>Métricas activas</p>
+        </div>
+      </div>
+
+      <div class="dashboard-main-grid">
+        <div class="big-card">
+          <h2>Plan de progresión</h2>
+          <p>Aumenta cargas, repeticiones e intensidad de forma controlada.</p>
+
+          <div class="routine-item">✅ Peso muerto - +5 kg esta semana</div>
+          <div class="routine-item">⬜ Press banca - 5 series de 6</div>
+          <div class="routine-item">⬜ Dominadas - 4 series al fallo controlado</div>
+          <div class="routine-item">⬜ Sentadilla - 5 series de 5</div>
+
+          <button class="btn btn-primary">Ver progresión</button>
+        </div>
+
+        <div class="big-card">
+          <h2>Rendimiento</h2>
+          <p>Resumen de evolución mensual.</p>
+
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:78%;"></div>
+          </div>
+
+          <h3 class="progress-text">78%</h3>
+          <p>Excelente avance. Ajusta la intensidad con cuidado.</p>
+        </div>
+      </div>
+
+      <div class="big-card motivation-card">
+        <h2>Consejo avanzado</h2>
+        <p>“Controla el volumen y la recuperación. Más entrenamiento no siempre significa mejor progreso.”</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="../js/main.js"></script>
+
+</body>
+</html>

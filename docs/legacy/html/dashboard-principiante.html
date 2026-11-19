@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueForm - Dashboard Principiante</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body data-dashboard="principiante">
+
+<header class="navbar">
+  <a href="/" class="nav-logo">
+    <span class="logo-badge">
+      <img src="../fotos/logo.jpeg" alt="TrueForm">
+    </span>
+    TrueForm
+  </a>
+
+  <nav class="nav-links">
+    <a href="/">Inicio</a>
+    <a href="/login" class="btn-login">Cerrar Sesión</a>
+  </nav>
+</header>
+
+<main class="app-dashboard">
+
+  <aside class="app-sidebar">
+    <div class="profile-box">
+      <div class="profile-icon">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <h3 id="nombreUsuario">Usuario</h3>
+      <p id="nivelUsuario">Nivel: Sin nivel</p>
+    </div>
+
+    <a class="side-link active" onclick="mostrarPanel('inicio', this)">
+      <i class="fa-solid fa-house"></i> Dashboard
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('rutina', this)">
+      <i class="fa-solid fa-calendar-week"></i> Rutina semanal
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('progreso', this)">
+      <i class="fa-solid fa-chart-pie"></i> Mi progreso
+    </a>
+    
+    <a class="side-link" onclick="mostrarPanel('tips', this)">
+      <i class="fa-solid fa-lightbulb"></i> Tips básicos
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('glosario', this)">
+      <i class="fa-solid fa-book-open"></i> Glosario
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('videos', this)">
+    <i class="fa-solid fa-circle-play"></i> Videos
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('chat', this)">
+      <i class="fa-solid fa-robot"></i> Chat IA
+    </a>
+  </aside>
+
+  <section class="app-content">
+    <h1 id="tituloPanel">Panel Principiante</h1>
+      <p class="app-subtitle" id="subtituloPanel">Empieza tu entrenamiento con rutinas guiadas, consejos básicos y apoyo inteligente.</p>
+
+    <div id="panelContenido">
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fa-solid fa-calendar-check"></i>
+          <h3>3/7</h3>
+          <p>Días completados</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-chart-line"></i>
+          <h3>45%</h3>
+          <p>Progreso semanal</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-fire"></i>
+          <h3>5</h3>
+          <p>Días de racha</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-robot"></i>
+          <h3>8</h3>
+          <p>Consultas IA</p>
+        </div>
+      </div>
+
+      <div class="dashboard-main-grid">
+
+        <div class="big-card">
+          <h2>Rutina del día</h2>
+          <p>Entrenamiento básico para iniciar con seguridad.</p>
+
+          <div class="routine-item">✅ Calentamiento - 5 minutos</div>
+          <div class="routine-item">⬜ Sentadillas - 3 series de 12</div>
+          <div class="routine-item">⬜ Flexiones apoyadas - 3 series de 8</div>
+          <div class="routine-item">⬜ Plancha - 3 series de 20 segundos</div>
+
+          <button class="btn btn-primary" onclick="comenzarRutina()">Comenzar rutina</button>
+        </div>
+
+        <div class="big-card">
+          <h2>Tu progreso</h2>
+          <p>Visualiza tu avance semanal.</p>
+
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+
+          <h3 class="progress-text">45%</h3>
+          <p>Vas avanzando muy bien. Sigue constante.</p>
+        </div>
+
+      </div>
+
+      <div class="big-card motivation-card">
+        <h2>Consejo de hoy</h2>
+        <p>“No necesitas entrenar perfecto, solo ser constante. Cada sesión cuenta.”</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script src="../js/main.js"></script>
+
+</body>
+</html>
