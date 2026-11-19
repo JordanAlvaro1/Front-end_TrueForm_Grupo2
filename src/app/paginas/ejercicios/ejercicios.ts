@@ -15,7 +15,7 @@ import { EjercicioService } from '../../servicios/ejercicio.service';
 
 @Component({
   selector: 'app-ejercicios', standalone: true,
-  imports: [CommonModule, RouterLink, MatTableModule, MatPaginatorModule, MatSortModule,
+  imports:[RouterLink, CommonModule, RouterLink, MatTableModule, MatPaginatorModule, MatSortModule,
     MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatProgressSpinnerModule],
   templateUrl: './ejercicios.html', styleUrl: './ejercicios.css'
 })

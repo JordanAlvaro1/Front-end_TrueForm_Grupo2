@@ -1,16 +1,16 @@
 <header class="navbar">
   <div class="nav-logo">
-    <span class="logo-badge"><img src="/fotos/logo.jpeg" alt="TrueForm"></span>
+    <span class="logo-badge"><img src="fotos/logo.jpeg" alt="TrueForm"></span>
     TrueForm
   </div>
   <button type="button" class="nav-toggle" aria-label="Abrir menu" (click)="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
   <nav class="nav-links" id="navLinks" [class.open]="menuAbierto">
-    <a href="/">Inicio</a>
-    <a href="/nosotros">Sobre Nosotros</a>
-    <a href="/beneficios" class="active">Beneficios</a>    
-    <a href="/contacto">Contacto</a><a href="/ejercicios">Ejercicios</a><a href="/espacio">Mi espacio</a><a href="/panel">Registrar datos</a>
-    <a href="/login" class="btn-login">Iniciar Sesión</a>
-    <a href="/registro" class="btn-register">Registrar</a>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/nosotros">Sobre Nosotros</a>
+    <a routerLink="/beneficios" class="active">Beneficios</a>    
+    <a routerLink="/contacto">Contacto</a><a routerLink="/ejercicios">Ejercicios</a><a routerLink="/espacio">Mi espacio</a><a routerLink="/panel">Registrar datos</a>
+    <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
+    <a routerLink="/registro" class="btn-register">Registrar</a>
   </nav>
 </header>
 
@@ -22,7 +22,7 @@
         <div>
           <h3>Asistente IA</h3>
           <p>Obtén recomendaciones inteligentes y respuestas basadas en evidencia.</p>
-          <a class="bc-link" href="/espacio">Hablar con IA →</a>
+          <a class="bc-link" routerLink="/espacio">Hablar con IA →</a>
         </div>
       </div>
       <div class="benefit-card">
@@ -30,7 +30,7 @@
         <div>
           <h3>Rutinas personalizadas</h3>
           <p>Planes adaptados a tu nivel, objetivos y disponibilidad.</p>
-          <a class="bc-link" href="/espacio">Ver rutinas →</a>
+          <a class="bc-link" routerLink="/espacio">Ver rutinas →</a>
         </div>
       </div>
       <div class="benefit-card center">
@@ -38,7 +38,7 @@
         <div>
           <h3>Progreso</h3>
           <p>Visualiza tu evolución con métricas y gráficos motivadores.</p>
-          <a class="bc-link" href="/espacio">Ver mi progreso →</a>
+          <a class="bc-link" routerLink="/espacio">Ver mi progreso →</a>
         </div>
       </div>
     </div>

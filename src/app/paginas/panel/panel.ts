@@ -19,7 +19,7 @@ import { RegistroEntrenamientoService } from '../../servicios/registro-entrenami
 
 @Component({
   selector: 'app-panel', standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MatCardModule, MatTableModule,
+  imports:[RouterLink, CommonModule, FormsModule, RouterLink, MatCardModule, MatTableModule,
     MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatProgressSpinnerModule],
   templateUrl: './panel.html', styleUrl: './panel.css'
 })

@@ -1,0 +1,21 @@
+TRUEFORM - VERSION CORREGIDA PARA GITHUB PAGES
+
+Se corrigieron los enlaces internos a routerLink, se agrego RouterLink a los componentes que lo necesitan, se habilito withHashLocation() y se corrigieron las rutas de imagenes y documentos. La compilacion de produccion usa /Front-end_TrueForm_Grupo2/ como base.
+
+1. Extrae este ZIP en una carpeta nueva.
+2. Abre esa carpeta en WebStorm.
+3. En la terminal PowerShell ejecuta: .\PUBLICAR_GITHUB_PAGES.ps1
+   Si PowerShell impide ejecutar el script, ejecuta manualmente:
+      npm install
+      npm run build
+      New-Item -ItemType Directory -Path .\docs -Force
+      Copy-Item -Path .\dist\TrueForm\browser\* -Destination .\docs -Recurse -Force
+      New-Item -ItemType File -Path .\docs\.nojekyll -Force
+4. Copia los archivos del proyecto corregido (incluyendo docs) a la carpeta clonada de tu repositorio Front-end_TrueForm_Grupo2, SIN reemplazar ni eliminar .git.
+5. Desde la carpeta clonada: git add . ; git commit -m "Corregir rutas e imagenes TrueForm" ; git push origin main
+6. GitHub -> Settings -> Pages -> Deploy from a branch -> main -> /docs.
+
+LIMITACIONES:
+- No se pudo ejecutar npm install/build en este entorno. Ejecuta el script en WebStorm y verifica que termine sin errores antes de subir.
+- El archivo public/documentos/TrueForm_Presentacion.pdf del ZIP original esta VACIO (0 bytes); necesitas reemplazarlo por el PDF real.
+- GitHub Pages solo publica frontend. Los endpoints /api requieren backend Spring Boot desplegado por HTTPS, URL configurada, CORS y seguridad adecuada. El backend del proyecto se describe como demo sin autenticacion segura; NO publiques informacion real sin corregir la seguridad.

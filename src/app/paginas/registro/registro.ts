@@ -1,10 +1,11 @@
+import { RouterLink } from '@angular/router';
 import { finalize, timeout } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ObjetivoDTO, RegistroUsuarioDTO, TrueformApiService } from '../../servicios/trueform-api.service';
-@Component({selector:'app-registro',standalone:true,imports:[CommonModule,FormsModule],templateUrl:'./registro.html',styleUrl:'./registro.css'})
+@Component({selector:'app-registro',standalone:true,imports:[RouterLink, CommonModule,FormsModule],templateUrl:'./registro.html',styleUrl:'./registro.css'})
 export class Registro implements OnInit {
  private cd=inject(ChangeDetectorRef); private api=inject(TrueformApiService);private router=inject(Router);
  menuAbierto=false; verClave=false; procesando=false; error=false;mensaje='';password2='';

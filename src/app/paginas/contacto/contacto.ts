@@ -1,5 +1,6 @@
+import { RouterLink } from '@angular/router';
 import { Component } from '@angular/core';
-@Component({selector:'app-contacto', standalone:true, templateUrl:'./contacto.html',styleUrl:'./contacto.css'})
+@Component({selector:'app-contacto', standalone:true,imports:[RouterLink], templateUrl:'./contacto.html',styleUrl:'./contacto.css'})
 export class Contacto {
    menuAbierto = false;
    toggleMenu(): void { this.menuAbierto = !this.menuAbierto; }

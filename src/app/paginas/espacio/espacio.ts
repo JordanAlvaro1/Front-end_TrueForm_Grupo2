@@ -23,7 +23,7 @@ type Vista = 'inicio'|'rutinas'|'calendario'|'progreso'|'ejercicios'|'recomendac
 
 @Component({
   selector:'app-espacio', standalone:true,
-  imports:[CommonModule,FormsModule,RouterLink,MatButtonModule],
+  imports:[RouterLink, CommonModule,FormsModule,RouterLink,MatButtonModule],
   templateUrl:'./espacio.html',styleUrl:'./espacio.css'
 })
 export class Espacio implements OnInit {

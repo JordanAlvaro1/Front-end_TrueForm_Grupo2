@@ -1,23 +1,23 @@
 <header class="navbar">
   <div class="nav-logo">
-    <span class="logo-badge"><img src="/fotos/logo.jpeg" alt="TrueForm"></span>
+    <span class="logo-badge"><img src="fotos/logo.jpeg" alt="TrueForm"></span>
     TrueForm
   </div>
   <button type="button" class="nav-toggle" aria-label="Abrir menu" (click)="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
   <nav class="nav-links" id="navLinks" [class.open]="menuAbierto">
-    <a href="/">Inicio</a>
-    <a href="/nosotros" class="active">Sobre Nosotros</a>
-    <a href="/beneficios">Beneficios</a>
-    <a href="/contacto">Contacto</a><a href="/ejercicios">Ejercicios</a><a href="/espacio">Mi espacio</a><a href="/panel">Registrar datos</a>
-    <a href="/login" class="btn-login">Iniciar Sesión</a>
-    <a href="/registro" class="btn-register">Registrar</a>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/nosotros" class="active">Sobre Nosotros</a>
+    <a routerLink="/beneficios">Beneficios</a>
+    <a routerLink="/contacto">Contacto</a><a routerLink="/ejercicios">Ejercicios</a><a routerLink="/espacio">Mi espacio</a><a routerLink="/panel">Registrar datos</a>
+    <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
+    <a routerLink="/registro" class="btn-register">Registrar</a>
   </nav>
 </header>
 
 <main class="teal-page">
   <div class="container about-split">
     <div class="about-logo">
-      <img src="/fotos/logo.jpeg" alt="Logo TrueForm" class="about-logo-img">
+      <img src="fotos/logo.jpeg" alt="Logo TrueForm" class="about-logo-img">
     </div>
     <div class="panel about-text">
       <h2>TrueForm</h2>

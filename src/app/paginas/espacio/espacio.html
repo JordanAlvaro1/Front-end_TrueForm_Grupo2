@@ -1,6 +1,6 @@
 <div class="tf-workspace">
   <aside class="tf-sidebar" [class.open]="menuMovil" aria-label="Navegación del usuario">
-    <a class="tf-brand" routerLink="/"><span class="tf-brand-icon"><img src="/fotos/logo.jpeg" alt=""></span><span>TRUE<span class="tf-accent">FORM</span><small>ENTRENAMIENTO PERSONAL</small></span></a>
+    <a class="tf-brand" routerLink="/"><span class="tf-brand-icon"><img src="fotos/logo.jpeg" alt=""></span><span>TRUE<span class="tf-accent">FORM</span><small>ENTRENAMIENTO PERSONAL</small></span></a>
     <div class="tf-persona"><div class="tf-avatar">{{nombre.charAt(0).toUpperCase()}}</div><div><strong>{{nombre}}</strong><span>{{nivelEtiqueta}} · #{{idUsuario}}</span></div><span class="tf-online" aria-label="Modo local"></span></div>
     <nav class="tf-menu">
       <ng-container *ngFor="let item of menu;let index=index">

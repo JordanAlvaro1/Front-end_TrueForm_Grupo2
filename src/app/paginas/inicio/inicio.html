@@ -1,8 +1,8 @@
 <!-- Navbar -->
   <header class="navbar">
-    <a href="/" class="nav-logo">
+    <a routerLink="/" class="nav-logo">
       <span class="logo-badge">
-        <img src="/fotos/logo.jpeg" alt="TrueForm">
+        <img src="fotos/logo.jpeg" alt="TrueForm">
       </span>
       TrueForm
     </a>
@@ -12,12 +12,12 @@
     </button>
 
     <nav class="nav-links" id="navLinks" [class.open]="menuAbierto">
-      <a href="/" class="active">Inicio</a>
-      <a href="/nosotros">Sobre Nosotros</a>
-      <a href="/beneficios">Beneficios</a>
-      <a href="/contacto">Contacto</a><a href="/ejercicios">Ejercicios</a><a href="/espacio">Mi espacio</a><a href="/panel">Registrar datos</a>
-      <a href="/login" class="btn-login">Iniciar Sesión</a>
-      <a href="/documentos/TrueForm_Presentacion.pdf" 
+      <a routerLink="/" class="active">Inicio</a>
+      <a routerLink="/nosotros">Sobre Nosotros</a>
+      <a routerLink="/beneficios">Beneficios</a>
+      <a routerLink="/contacto">Contacto</a><a routerLink="/ejercicios">Ejercicios</a><a routerLink="/espacio">Mi espacio</a><a routerLink="/panel">Registrar datos</a>
+      <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
+      <a href="documentos/TrueForm_Presentacion.pdf" 
         download 
           class="btn-download">
           Descargar
@@ -41,8 +41,8 @@
       </p>
 
       <div class="hero-actions">
-        <a href="/registro" class="btn btn-primary">Empezar ahora</a>
-        <a href="/beneficios" class="btn btn-ghost">Ver beneficios</a>
+        <a routerLink="/registro" class="btn btn-primary">Empezar ahora</a>
+        <a routerLink="/beneficios" class="btn btn-ghost">Ver beneficios</a>
       </div>
     </div>
 
@@ -132,7 +132,7 @@
         <h2>Empieza con una rutina hecha para ti</h2>
         <p>Regístrate y accede a una experiencia personalizada según tu nivel.</p>
       </div>
-      <a href="/registro" class="btn btn-primary">Crear cuenta gratis</a>
+      <a routerLink="/registro" class="btn btn-primary">Crear cuenta gratis</a>
     </div>
   </section>
 
@@ -242,7 +242,7 @@
 
         <div class="team-card">
           <div class="team-avatar">
-            <img src="/fotos/Alvaro%20Erick%20Jordan%20Villa.jpeg" alt="Alvaro Erick Jordan Villa">
+            <img src="fotos/Alvaro%20Erick%20Jordan%20Villa.jpeg" alt="Alvaro Erick Jordan Villa">
           </div>
           <h3>Alvaro Erick Jordan Villa</h3>
           <p>Mi nombre es Alvaro Erick Jordan Villa. Me destaco por trabajar bien en equipo y por mantener siempre una actitud empática. Confío en que nuestro aplicativo TrueForm pueda aportar valor y ser de ayuda en la rutina diaria de nuestros usuarios.</p>
@@ -250,7 +250,7 @@
 
         <div class="team-card">
           <div class="team-avatar">
-            <img src="/fotos/Diego Aaron Grajeda Rossi.jpeg" alt="Diego Aaron Grajeda Rossi">
+            <img src="fotos/Diego Aaron Grajeda Rossi.jpeg" alt="Diego Aaron Grajeda Rossi">
           </div>
           <h3>Diego Aaron Grajeda Rossi</h3>
           <p>Mi nombre es Diego Aaron Grajeda Rossi, me destaco por ser alguien centrado, determinado a la hora de trabajar en grupo y buscando apoyar a quien necesita de ayuda. Estoy seguro que la app de TrueForm podrá ser de utilidad en su día a día de los usuarios.</p>
@@ -258,7 +258,7 @@
 
         <div class="team-card">
           <div class="team-avatar">
-            <img src="/fotos/Mateo Rentería Caamaño.jpg" alt="Mateo Rentería Caamaño">
+            <img src="fotos/Mateo Rentería Caamaño.jpg" alt="Mateo Rentería Caamaño">
           </div>
           <h3>Mateo Rentería Caamaño</h3>
           <p>Mi nombre es Mateo Rentería Caamaño. Me caracterizo por trabajar bien bajo presión y tener una actitud predominantemente positiva. Considero que nuestro aplicativo TrueForm es capaz de aportar un bien en la salud de nuestros usuarios.</p>
@@ -266,7 +266,7 @@
 
         <div class="team-card">
           <div class="team-avatar">
-            <img src="/fotos/Solorzano Espinoza Mauro Waldemar.jpeg" alt="Solorzano Espinoza Mauro Waldemar">
+            <img src="fotos/Solorzano Espinoza Mauro Waldemar.jpeg" alt="Solorzano Espinoza Mauro Waldemar">
           </div>
           <h3>Solorzano Espinoza Mauro Waldemar</h3>
           <p>Mi nombre es Mauro Waldemar Solorzano Espinoza. Soy una persona proactiva, adaptable y con buena comunicación en el trabajo en equipo. Estoy segura de que nuestro aplicativo TrueForm será una herramienta práctica y confiable que acompañará y apoyará a los usuarios.</p>
@@ -280,14 +280,14 @@
     <div class="container">
       <h2>¿Listo para entrenar de forma segura?</h2>
       <p>Crea tu cuenta y empieza con una rutina personalizada según tu nivel.</p>
-      <a href="/registro" class="btn btn-primary">Registrarme ahora</a>
+      <a routerLink="/registro" class="btn btn-primary">Registrarme ahora</a>
     </div>
   </section>
 
   <footer class="footer-main">
   <div class="footer-container">
     <div class="footer-col">
-      <img src="/fotos/logo.jpeg" alt="TrueForm" class="footer-logo">
+      <img src="fotos/logo.jpeg" alt="TrueForm" class="footer-logo">
       <h3>TrueForm</h3>
       <p>
         Entrena con confianza gracias a un asistente inteligente que te recomendara rutinas personalizadas y responde tus dudas 
@@ -295,11 +295,11 @@
     </div>
     <div class="footer-col">
       <h4>Enlaces rápidos</h4>
-      <a href="/">Inicio</a>
-      <a href="/nosotros">Sobre Nosotros</a>
-      <a href="/beneficios">Beneficios</a>
-      <a href="/contacto">Contacto</a><a href="/ejercicios">Ejercicios</a><a href="/espacio">Mi espacio</a><a href="/panel">Registrar datos</a>
-      <a href="/registro">Registrarme</a>
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/nosotros">Sobre Nosotros</a>
+      <a routerLink="/beneficios">Beneficios</a>
+      <a routerLink="/contacto">Contacto</a><a routerLink="/ejercicios">Ejercicios</a><a routerLink="/espacio">Mi espacio</a><a routerLink="/panel">Registrar datos</a>
+      <a routerLink="/registro">Registrarme</a>
     </div>
     <div class="footer-col">
       <h4>Contacto</h4>

@@ -43,7 +43,8 @@
                   "maximumError": "40kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/Front-end_TrueForm_Grupo2/"
             },
             "development": {
               "optimization": false,

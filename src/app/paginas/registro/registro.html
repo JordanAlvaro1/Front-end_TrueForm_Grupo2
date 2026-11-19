@@ -1,6 +1,6 @@
-<header class="navbar"><a class="nav-logo" href="/"><span class="logo-badge"><img src="/fotos/logo.jpeg" alt="TrueForm"></span>TrueForm</a>
+<header class="navbar"><a class="nav-logo" routerLink="/"><span class="logo-badge"><img src="fotos/logo.jpeg" alt="TrueForm"></span>TrueForm</a>
 <button type="button" class="nav-toggle" (click)="toggleMenu()" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
-<nav class="nav-links" [class.open]="menuAbierto"><a href="/">Inicio</a><a href="/nosotros">Sobre Nosotros</a><a href="/beneficios">Beneficios</a><a href="/contacto">Contacto</a><a href="/ejercicios">Ejercicios</a><a href="/espacio">Mi espacio</a><a href="/panel">Registrar datos</a><a href="/login">Iniciar sesión</a><a href="/registro" class="btn-register">Registrar</a></nav></header>
+<nav class="nav-links" [class.open]="menuAbierto"><a routerLink="/">Inicio</a><a routerLink="/nosotros">Sobre Nosotros</a><a routerLink="/beneficios">Beneficios</a><a routerLink="/contacto">Contacto</a><a routerLink="/ejercicios">Ejercicios</a><a routerLink="/espacio">Mi espacio</a><a routerLink="/panel">Registrar datos</a><a routerLink="/login">Iniciar sesión</a><a routerLink="/registro" class="btn-register">Registrar</a></nav></header>
 <main class="teal-page"><div class="panel panel-split"><form (submit)="registrar($event)">
 <h2>Registrarse en TrueForm</h2>
 <div class="field"><label for="nombres">Nombres</label><input id="nombres" class="line-input" name="nombres" required [(ngModel)]="datos.nombres"></div>
@@ -18,5 +18,5 @@
 <label class="check-row"><input type="checkbox" name="verClave" [(ngModel)]="verClave"> Mostrar contraseña</label>
 <p *ngIf="mensaje" class="mensaje-api" [class.error]="error">{{mensaje}}</p>
 <button type="submit" class="btn btn-primary btn-block" [disabled]="procesando || objetivos.length===0">{{procesando?'Registrando...':'Registrar'}}</button>
-<a class="enlace-auxiliar" href="/login">Ya tengo cuenta</a>
-</form><div class="qr"><img src="/fotos/logo.jpeg" alt="Logo TrueForm"></div></div></main><footer class="footer">© 2026 TrueForm — Tu entrenador inteligente.</footer>
+<a class="enlace-auxiliar" routerLink="/login">Ya tengo cuenta</a>
+</form><div class="qr"><img src="fotos/logo.jpeg" alt="Logo TrueForm"></div></div></main><footer class="footer">© 2026 TrueForm — Tu entrenador inteligente.</footer>

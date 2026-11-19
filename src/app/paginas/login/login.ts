@@ -1,10 +1,11 @@
+import { RouterLink } from '@angular/router';
 import { finalize, timeout } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TrueformApiService, UsuarioDTO } from '../../servicios/trueform-api.service';
-@Component({selector:'app-login',standalone:true,imports:[CommonModule,FormsModule],templateUrl:'./login.html',styleUrl:'./login.css'})
+@Component({selector:'app-login',standalone:true,imports:[RouterLink, CommonModule,FormsModule],templateUrl:'./login.html',styleUrl:'./login.css'})
 export class Login {
  private cd=inject(ChangeDetectorRef); private api=inject(TrueformApiService); private router=inject(Router);
  menuAbierto=false; email=''; password=''; verClave=false; procesando=false; error=false; mensaje='';
