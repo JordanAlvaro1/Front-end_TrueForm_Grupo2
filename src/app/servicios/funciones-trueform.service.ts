@@ -17,6 +17,9 @@ export class FuncionesTrueFormService {
   rutinaSemanal(id: number): Observable<RutinaSemanalDTO> { return this.http.get<RutinaSemanalDTO>(`/api/rutinas/usuario/${id}/semanal`); }
   ejerciciosDeRutina(id: number): Observable<RutinaEjercicioDTO[]> { return this.http.get<RutinaEjercicioDTO[]>(`/api/rutina-ejercicios/rutina/${id}`); }
   asignarEjercicio(datos: Omit<RutinaEjercicioDTO,'idRutinaEjercicio'>): Observable<RutinaEjercicioDTO> { return this.http.post<RutinaEjercicioDTO>('/api/rutina-ejercicios',datos); }
+  modificarEjercicio(datos: RutinaEjercicioDTO): Observable<RutinaEjercicioDTO> {
+    return this.http.put<RutinaEjercicioDTO>('/api/rutina-ejercicios', datos);
+  }
   quitarEjercicio(id: number): Observable<void> { return this.http.delete<void>(`/api/rutina-ejercicios/${id}`); }
   ejercicioGuiado(idRutina:number, dia:string, posicion:number): Observable<EjercicioGuiadoDTO> {
     return this.http.get<EjercicioGuiadoDTO>(`/api/rutina-ejercicios/rutina/${idRutina}/dia/${encodeURIComponent(dia)}/guiada`, {params:{posicion}});

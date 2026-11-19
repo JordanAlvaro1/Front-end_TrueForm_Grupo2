@@ -1,0 +1,67 @@
+<div class="im-wrapper">
+  <header class="im-banner">
+    <div>
+      <span class="im-eyebrow">TRUEFORM · NIVEL INTERMEDIO</span>
+      <h1>¡Sigue creciendo, {{ nombre }}!</h1>
+      <p>Organiza tu fuerza y resistencia, ajusta tus ejercicios y revisa tu progreso con datos reales.</p>
+      <div class="im-actions">
+        <button type="button" class="im-btn im-primary" (click)="navegarA('rutinas')">Ver rutina personalizada →</button>
+        <button type="button" class="im-btn im-outline" (click)="navegarA('gestion')">Crear o modificar rutina</button>
+      </div>
+    </div>
+    <div class="im-symbol" aria-hidden="true">Ⅱ<span>INTERMEDIO</span></div>
+  </header>
+
+  <section class="im-metrics" aria-label="Indicadores de entrenamiento">
+    <article class="im-metric"><span class="im-emoji">▦</span><small>Sesiones completadas esta semana</small><strong>{{ totalSemana }}</strong><em *ngIf="!resumenSemanal">Sin resumen semanal</em></article>
+    <article class="im-metric"><span class="im-emoji">↗</span><small>Progreso semanal registrado</small><strong>{{ avanceSemanal === null ? '—' : ((avanceSemanal | number:'1.0-0') + '%') }}</strong><em *ngIf="avanceSemanal===null">Sin mediciones suficientes</em></article>
+    <article class="im-metric"><span class="im-emoji">▤</span><small>Rutinas personales</small><strong>{{ rutinas.length }}</strong><em>Consultadas desde la API</em></article>
+    <article class="im-metric"><span class="im-emoji">◇</span><small>Ejercicios en la rutina elegida</small><strong>{{ totalEjercicios }}</strong><em>Personalízalos según tu objetivo</em></article>
+  </section>
+
+  <div class="im-columns">
+    <article class="im-panel">
+      <div class="im-panel-head"><div><span class="im-eyebrow im-green">RUTINA PERSONALIZADA</span><h2>{{ rutina?.nombreRutina || 'Tu próxima rutina' }}</h2></div><button type="button" class="im-link" (click)="navegarA('rutinas')">Abrir →</button></div>
+      <p>{{ rutina?.descripcion || (rutinas.length ? 'Consulta y personaliza los ejercicios de tu plan.' : 'Todavía no tienes una rutina. Crea una desde Gestión de rutinas.') }}</p>
+      <div *ngIf="rutina" class="im-exercise-list">
+        <div *ngFor="let e of detalleRutina.slice(0,5)" class="im-exercise"><span class="im-bullet">{{ e.series }}×</span><div><strong>{{ nombreEjercicio(e.idEjercicio) }}</strong><small>{{ e.repeticiones }} repeticiones · {{ e.diaSemana || 'Día por definir' }}</small></div></div>
+        <p class="im-empty" *ngIf="!detalleRutina.length && !cargando['detalleRutina']">No hay ejercicios asignados en esta rutina.</p>
+        <p class="im-empty" *ngIf="cargando['detalleRutina']">Cargando ejercicios desde Spring Boot...</p>
+      </div>
+      <p class="im-empty" *ngIf="!rutina">Puedes empezar creando una rutina nueva.</p>
+      <button type="button" class="im-btn im-primary im-full" (click)="navegarA(rutina ? 'rutinas' : 'gestion')">{{ rutina ? 'Abrir entrenamiento guiado' : 'Crear mi primera rutina' }}</button>
+    </article>
+
+    <article class="im-panel">
+      <div class="im-panel-head"><div><span class="im-eyebrow im-green">SEGUIMIENTO REAL</span><h2>Progreso actual</h2></div><button class="im-link" type="button" (click)="navegarA('progreso')">Ver informes →</button></div>
+      <div class="im-progress-value">{{ avanceSemanal === null ? '—' : ((avanceSemanal | number:'1.0-0') + '%') }}</div>
+      <p>{{ progresoSemanal?.mensaje || 'Promedio de cumplimiento durante la semana actual. No se inventan porcentajes cuando faltan registros.' }}</p>
+      <div class="im-progress-track" role="progressbar" [attr.aria-valuenow]="avanceSemanal" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso semanal"><div [style.width.%]="avanceVisual"></div></div>
+      <div class="im-mini-heading">Plan semanal</div>
+      <p class="im-empty" *ngIf="cargando['semanal']">Cargando planificación...</p>
+      <div *ngFor="let dia of (rutinaSemanal?.dias || []).slice(0,4)" class="im-weekday"><strong>{{dia.dia | titlecase}}</strong><span>{{dia.descanso ? 'Descanso' : (dia.ejercicios.length + ' ejercicios')}}</span></div>
+      <p class="im-empty" *ngIf="!rutinaSemanal && !cargando['semanal']">No hay planificación semanal disponible.</p>
+    </article>
+  </div>
+
+  <article class="im-recommendation">
+    <div><span class="im-eyebrow im-green">RECOMENDACIÓN INTERMEDIA · API</span><h2>¿Qué puedes mejorar?</h2>
+      <p>{{ recomendacion?.recomendacion || ajuste?.recomendacion || recomendacion?.mensaje || ajuste?.mensaje || 'Registra entrenamientos y progresos para recibir recomendaciones personalizadas.' }}</p>
+      <p class="im-error" *ngIf="errores['recomendacionProgreso']">{{errores['recomendacionProgreso']}}</p>
+    </div>
+    <button type="button" class="im-btn im-secondary" (click)="navegarA('recomendaciones')">Explorar recomendaciones →</button>
+  </article>
+
+  <div class="im-section-head"><div><span class="im-eyebrow im-green">TU ESPACIO</span><h2>Herramientas intermedias</h2></div><p>Incluyen funciones originales de IHC y nuevas historias de usuario conectadas.</p></div>
+  <div class="im-shortcuts">
+    <button type="button" (click)="navegarA('gestion')"><span>✎</span><strong>Crear / modificar rutina</strong><small>Guarda cambios en PostgreSQL</small></button>
+    <button type="button" (click)="navegarA('cambios')"><span>⇄</span><strong>Cambiar ejercicios</strong><small>Sustituye ejercicios en tu plan</small></button>
+    <button type="button" (click)="navegarA('calendario')"><span>▦</span><strong>Calendario</strong><small>Organiza entrenamientos</small></button>
+    <button type="button" (click)="navegarA('tips')"><span>☼</span><strong>Tips intermedios</strong><small>Consejos desde la API</small></button>
+    <button type="button" (click)="navegarA('tecnica')"><span>▷</span><strong>Técnica y videos</strong><small>Material educativo</small></button>
+    <button type="button" (click)="navegarA('chat')"><span>◈</span><strong>Chat IA</strong><small>Depende del proveedor Gemini</small></button>
+    <button type="button" (click)="navegarA('ejercicios')"><span>♡</span><strong>Ejercicios y favoritos</strong><small>Explora, guarda y consulta alternativas</small></button>
+    <button type="button" (click)="navegarA('glosario')"><span>A</span><strong>Glosario</strong><small>Conceptos de entrenamiento</small></button>
+  </div>
+  <article class="im-panel im-tips" *ngIf="tips.length"><div class="im-panel-head"><h2>Consejos del día</h2><button type="button" class="im-link" (click)="navegarA('tips')">Ver todos →</button></div><div *ngFor="let tip of tips.slice(0,2)"><strong>{{tip.titulo}}</strong><p>{{tip.contenido}}</p></div></article>
+</div>

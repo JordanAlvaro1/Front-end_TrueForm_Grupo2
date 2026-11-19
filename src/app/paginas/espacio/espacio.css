@@ -24,3 +24,10 @@ button {cursor:pointer}
 @media(max-width:1000px){.tf-sidebar {position:fixed;transform:translateX(-100%);transition:transform .25s;width:265px}.tf-sidebar.open {transform:translateX(0)}.tf-mobile-toggle {display:inline-block}.tf-hero-graphic {min-width:160px}.tf-ring {width:130px;height:130px}.tf-ring strong {font-size:28px}}
 @media(max-width:750px){.tf-main {padding:18px 13px 60px}.tf-topbar {height:62px;padding:0 15px}.tf-top-actions {gap:7px}.tf-local-pill {display:none}.tf-hero {padding:25px;min-height:auto}.tf-hero-graphic {display:none}.tf-hero h1 {font-size:29px}.tf-stats {grid-template-columns:repeat(2,minmax(0,1fr))}.tf-two-col,.tf-shortcuts,.tf-recs {grid-template-columns:1fr}.tf-page-heading {align-items:flex-start;flex-direction:column}.tf-card {padding:17px}.tf-exercise-grid {grid-template-columns:1fr}.tf-shortcuts button {padding:16px}}
 @media(max-width:440px){.tf-stats {gap:8px}.tf-stat {padding:13px;min-height:123px}.tf-stat strong {font-size:25px}.tf-field-row {grid-template-columns:1fr}.tf-top-left {font-size:11px}.tf-button-ghost {padding:8px 10px}.tf-schedule select {width:105px}}
+
+/* Módulos reales de nivel intermedio: reutilizan el diseño original de Espacio. */
+.tf-main-intermedio{max-width:1530px}
+.tf-management-links{margin-top:16px}
+.tf-alternative-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tf-alternative-chips button{background:#eaf8f2;color:#0b796b;border:1px solid #b8e2d8;padding:8px 10px;border-radius:9px;font-size:11px;font-weight:750}
+.tf-alternative-chips button:hover{background:#d5f2e8}

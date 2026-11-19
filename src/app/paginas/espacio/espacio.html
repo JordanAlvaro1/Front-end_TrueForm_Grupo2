@@ -12,13 +12,22 @@
   </aside>
   <div class="tf-shell">
     <header class="tf-topbar"><div class="tf-top-left"><button type="button" class="tf-mobile-toggle" (click)="menuMovil=!menuMovil" aria-label="Abrir o cerrar menú">☰</button><span>Mi espacio / <strong>{{vista==='inicio'?'Resumen':vista==='rutinas'?'Entrenamiento':vista==='progreso'?'Seguimiento':vista | titlecase}}</strong></span></div><div class="tf-top-actions"><span class="tf-local-pill">● DEMO LOCAL</span><button type="button" class="tf-button-ghost" (click)="recargarBase()" [disabled]="cargando['rutinas']">↻ Actualizar datos</button></div></header>
-    <main class="tf-main">
+    <main class="tf-main" [class.tf-main-intermedio]="nivel==='intermedio'">
       <div class="tf-alert tf-alert-warn"><span>ⓘ</span> Versión académica sin Security. Este panel utiliza datos reales de la API, pero no protege los endpoints: solo debe ejecutarse en localhost con información de prueba.</div>
       <div class="tf-alert tf-alert-ok" *ngIf="aviso" role="status">✓ {{aviso}} <button type="button" (click)="aviso=''" aria-label="Cerrar aviso">×</button></div>
       <ng-container *ngFor="let key of ['usuario','rutinas','progresos','registros']"><div class="tf-alert tf-alert-error" *ngIf="errores[key]">{{key}}: {{errores[key]}}</div></ng-container>
 
       <!-- DASHBOARD -->
-      <section *ngIf="vista==='inicio'">
+      <section *ngIf="vista==='inicio' && nivel==='intermedio'">
+        <app-inicio-intermedio
+          [nombre]="nombre" [rutinas]="rutinas" [rutinaSeleccionada]="rutinaSeleccionada"
+          [detalleRutina]="detalleRutina" [ejercicios]="ejercicios" [rutinaSemanal]="rutinaSemanal"
+          [progresoSemanal]="semanaProgreso" [resumenSemanal]="resumenSemanal"
+          [recomendacion]="recomendacionProgreso" [ajuste]="ajuste" [calendario]="calendario"
+          [tips]="tips" [cargando]="cargando" [errores]="errores"
+          (navegar)="cambiarVista($event)"></app-inicio-intermedio>
+      </section>
+      <section *ngIf="vista==='inicio' && nivel!=='intermedio'">
         <div class="tf-hero"><div><span class="tf-eyebrow">TU EVOLUCIÓN COMIENZA AQUÍ</span><h1>¡Hola, {{nombre}}! <span>✦</span></h1><p>{{descripcionNivel}}</p><div class="tf-hero-actions"><button type="button" class="tf-btn tf-btn-light" (click)="cambiarVista('rutinas')">Ver mis rutinas <span>→</span></button><button type="button" class="tf-btn tf-btn-outline-light" (click)="cambiarVista('recomendaciones')">Ver recomendaciones</button></div></div><div class="tf-hero-graphic" aria-hidden="true"><span>TRUEFORM</span><div class="tf-ring"><strong>{{porcentajeMedio}}%</strong><small>media registrada</small></div></div></div>
         <div class="tf-stats"><div class="tf-stat"><span class="tf-stat-icon teal">▤</span><span>Rutinas creadas</span><strong>{{rutinas.length}}</strong><small>Planes en tu cuenta</small></div><div class="tf-stat"><span class="tf-stat-icon blue">◎</span><span>Entrenamientos</span><strong>{{registros.length}}</strong><small>Sesiones registradas</small></div><div class="tf-stat"><span class="tf-stat-icon orange">↗</span><span>Cumplimiento medio</span><strong>{{porcentajeMedio}}%</strong><small>Calculado con tus progresos</small></div><div class="tf-stat"><span class="tf-stat-icon purple">◇</span><span>Último peso</span><strong>{{ultimoPeso!==null?(ultimoPeso | number:'1.1-1'):'—'}}</strong><small>{{ultimoPeso!==null?'Kilogramos registrados':'Aún sin registros'}}</small></div></div>
         <div class="tf-two-col">
@@ -26,6 +35,55 @@
           <article class="tf-card"><div class="tf-card-head"><div><span class="tf-kicker">SEGUIMIENTO</span><h2>Tu constancia</h2></div><button type="button" class="tf-text-button" (click)="cambiarVista('progreso')">Ver informes →</button></div><div class="tf-progress-big"><div class="tf-progress-number">{{porcentajeMedio}}%</div><p>Cumplimiento promedio de los registros disponibles</p><div class="tf-progress-track"><span [style.width.%]="porcentajeMedio"></span></div></div><div class="tf-soft-info" *ngIf="resumenProgreso">{{resumenProgreso.mensaje || (resumenProgreso.hayDatos ? 'Resumen de avance disponible' : 'Registra un progreso para ver un resumen completo.')}}</div><p class="tf-small" *ngIf="cargando['resumen']">Consultando resumen en la API...</p><p class="tf-error" *ngIf="errores['resumen']">{{errores['resumen']}}</p></article>
         </div>
         <div class="tf-shortcuts"><button (click)="cambiarVista('tips')" type="button"><span>☀</span><strong>Consejo del día</strong><small>Tips reales de la API</small><b>↗</b></button><button (click)="cambiarVista('chat')" type="button"><span>◈</span><strong>Asistente IA</strong><small>Resuelve tus dudas</small><b>↗</b></button><button (click)="cambiarVista('calendario')" type="button"><span>▦</span><strong>Mi calendario</strong><small>Organiza la semana</small><b>↗</b></button></div>
+      </section>
+
+      <!-- INTERMEDIO: CREACIÓN Y EDICIÓN VERDADERAS (POST y PUT /api/rutinas) -->
+      <section *ngIf="vista==='gestion' && nivel==='intermedio'">
+        <div class="tf-page-heading"><div><span class="tf-kicker">NIVEL INTERMEDIO · GESTIÓN</span><h1>Crear / modificar rutina</h1><p>Los cambios se guardan mediante la API actual de Spring Boot, no en localStorage.</p></div><button type="button" class="tf-btn tf-btn-outline" (click)="cambiarVista('calendario')">Ir al calendario →</button></div>
+        <div class="tf-two-col">
+          <article class="tf-card"><div class="tf-card-head"><h2>Crear nueva rutina</h2></div>
+            <form class="tf-fields" (ngSubmit)="crearRutinaIntermedia()">
+              <label>Nombre de la rutina<input type="text" required maxlength="150" [(ngModel)]="rutinaNueva.nombreRutina" name="nombreNueva" placeholder="Ej. Fuerza intermedia A/B"></label>
+              <label>Descripción<textarea rows="3" [(ngModel)]="rutinaNueva.descripcion" name="descripcionNueva" placeholder="Objetivo y días de entrenamiento"></textarea></label>
+              <div class="tf-field-row"><label>Fecha de inicio<input type="date" required [(ngModel)]="rutinaNueva.fechaInicio" name="inicioNueva"></label><label>Fecha fin (opcional)<input type="date" [(ngModel)]="rutinaNueva.fechaFin" name="finNueva"></label></div>
+              <label>Estado<select [(ngModel)]="rutinaNueva.estado" name="estadoNueva"><option value="activa">Activa</option><option value="pausada">Pausada</option><option value="finalizada">Finalizada</option></select></label>
+              <button class="tf-btn tf-btn-primary" type="submit" [disabled]="cargando['crearRutina']">{{cargando['crearRutina']?'Guardando...':'Crear rutina en PostgreSQL'}}</button>
+              <p class="tf-error" *ngIf="errores['crearRutina']">{{errores['crearRutina']}}</p>
+            </form>
+          </article>
+          <article class="tf-card"><div class="tf-card-head"><h2>Modificar una rutina existente</h2></div>
+            <div class="tf-fields">
+              <label>Selecciona una rutina<select [ngModel]="rutinaEdicionId" (ngModelChange)="editarRutina($event)"><option [ngValue]="0">Seleccionar...</option><option *ngFor="let r of rutinas" [ngValue]="r.idRutina">{{r.nombreRutina}}</option></select></label>
+              <ng-container *ngIf="rutinaEdicionId">
+                <label>Nuevo nombre<input [(ngModel)]="rutinaEdicion.nombreRutina" maxlength="150"></label>
+                <label>Descripción<textarea rows="3" [(ngModel)]="rutinaEdicion.descripcion"></textarea></label>
+                <div class="tf-field-row"><label>Fecha de inicio<input type="date" [(ngModel)]="rutinaEdicion.fechaInicio"></label><label>Fecha de fin<input type="date" [(ngModel)]="rutinaEdicion.fechaFin"></label></div>
+                <label>Estado<select [(ngModel)]="rutinaEdicion.estado"><option value="activa">Activa</option><option value="pausada">Pausada</option><option value="finalizada">Finalizada</option></select></label>
+                <button class="tf-btn tf-btn-primary" type="button" (click)="guardarEdicionRutina()" [disabled]="cargando['editarRutina']">{{cargando['editarRutina']?'Actualizando...':'Guardar cambios (PUT)'}}</button>
+              </ng-container>
+              <p class="tf-empty" *ngIf="!rutinas.length">No hay rutinas. Crea una en el formulario de la izquierda.</p>
+              <p class="tf-error" *ngIf="errores['editarRutina']">{{errores['editarRutina']}}</p>
+            </div>
+          </article>
+        </div>
+        <p class="tf-error" *ngIf="errorFormulario">{{errorFormulario}}</p>
+        <div class="tf-shortcuts tf-management-links"><button type="button" (click)="cambiarVista('rutinas')"><span>▤</span><strong>Asignar ejercicios</strong><small>Series, repeticiones y guía</small><b>↗</b></button><button type="button" (click)="cambiarVista('cambios')"><span>⇄</span><strong>Reemplazar ejercicios</strong><small>Editar tu planificación actual</small><b>↗</b></button><button type="button" (click)="cambiarVista('calendario')"><span>▦</span><strong>Programar sesión</strong><small>Organización semanal</small><b>↗</b></button></div>
+      </section>
+
+      <!-- INTERMEDIO: CAMBIO REAL DE EJERCICIOS (PUT /api/rutina-ejercicios) -->
+      <section *ngIf="vista==='cambios' && nivel==='intermedio'">
+        <div class="tf-page-heading"><div><span class="tf-kicker">NIVEL INTERMEDIO · ADAPTACIÓN</span><h1>Cambiar ejercicios</h1><p>Sustituye un ejercicio de tu rutina conservando las series, repeticiones, descanso y día asignados.</p></div></div>
+        <div class="tf-two-col"><article class="tf-card"><h2>1. Elige la rutina y el ejercicio</h2><div class="tf-fields">
+          <label>Rutina<select [ngModel]="rutinaSeleccionada" (ngModelChange)="seleccionarRutina($event)"><option [ngValue]="0">Seleccionar...</option><option *ngFor="let r of rutinas" [ngValue]="r.idRutina">{{r.nombreRutina}}</option></select></label>
+          <label>Ejercicio asignado<select [ngModel]="ejercicioACambiar" (ngModelChange)="prepararCambio($event)"><option [ngValue]="0">Selecciona uno...</option><option *ngFor="let e of detalleRutina" [ngValue]="e.idRutinaEjercicio">{{nombreDeEjercicio(e.idEjercicio)}} · {{e.series}}×{{e.repeticiones}}</option></select></label>
+          <p *ngIf="cargando['detalleRutina']" class="tf-small">Consultando ejercicios de la rutina...</p>
+          <p class="tf-empty" *ngIf="rutinaSeleccionada && !detalleRutina.length && !cargando['detalleRutina']">Esta rutina todavía no tiene ejercicios. Primero agrega alguno en «Rutina personalizada».</p>
+        </div></article><article class="tf-card"><h2>2. Selecciona el reemplazo</h2><div class="tf-fields">
+          <label>Ejercicio del catálogo<select [(ngModel)]="ejercicioReemplazo" [disabled]="!ejercicioACambiar"><option [ngValue]="0">Seleccionar reemplazo...</option><option *ngFor="let e of ejercicios" [ngValue]="e.idEjercicio">{{e.nombreEjercicio}} · {{e.grupoMuscular}}</option></select></label>
+          <p class="tf-small">Alternativas recomendadas por la API:</p><div class="tf-alternative-chips" *ngIf="ejercicioACambiar"><button type="button" *ngFor="let a of alternativasCambio" (click)="elegirAlternativa(a.idEjercicio)">{{a.nombreEjercicio}}</button><span *ngIf="!alternativasCambio.length && !cargando['alternativasCambio']" class="tf-small">Puedes elegir un ejercicio del catálogo.</span></div>
+          <button type="button" class="tf-btn tf-btn-primary" [disabled]="!ejercicioACambiar || !ejercicioReemplazo || cargando['cambioEjercicio']" (click)="guardarCambioEjercicio()">{{cargando['cambioEjercicio']?'Actualizando...':'Confirmar sustitución (PUT)'}}</button>
+          <p class="tf-error" *ngIf="errores['cambioEjercicio'] || errores['alternativasCambio']">{{errores['cambioEjercicio']||errores['alternativasCambio']}}</p>
+        </div></article></div><p class="tf-note">La API actual no registra un historial de sustituciones. Esta pantalla actualiza el ejercicio asignado a la rutina; no inventa una cantidad de ejercicios cambiados.</p>
       </section>
 
       <!-- RUTINAS -->
