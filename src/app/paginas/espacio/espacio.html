@@ -12,7 +12,7 @@
   </aside>
   <div class="tf-shell">
     <header class="tf-topbar"><div class="tf-top-left"><button type="button" class="tf-mobile-toggle" (click)="menuMovil=!menuMovil" aria-label="Abrir o cerrar menú">☰</button><span>Mi espacio / <strong>{{vista==='inicio'?'Resumen':vista==='rutinas'?'Entrenamiento':vista==='progreso'?'Seguimiento':vista | titlecase}}</strong></span></div><div class="tf-top-actions"><span class="tf-local-pill">● DEMO LOCAL</span><button type="button" class="tf-button-ghost" (click)="recargarBase()" [disabled]="cargando['rutinas']">↻ Actualizar datos</button></div></header>
-    <main class="tf-main" [class.tf-main-intermedio]="nivel==='intermedio'">
+    <main class="tf-main" [class.tf-main-intermedio]="nivel==='intermedio'" [class.tf-main-avanzado]="nivel==='avanzado'">
       <div class="tf-alert tf-alert-warn"><span>ⓘ</span> Versión académica sin Security. Este panel utiliza datos reales de la API, pero no protege los endpoints: solo debe ejecutarse en localhost con información de prueba.</div>
       <div class="tf-alert tf-alert-ok" *ngIf="aviso" role="status">✓ {{aviso}} <button type="button" (click)="aviso=''" aria-label="Cerrar aviso">×</button></div>
       <ng-container *ngFor="let key of ['usuario','rutinas','progresos','registros']"><div class="tf-alert tf-alert-error" *ngIf="errores[key]">{{key}}: {{errores[key]}}</div></ng-container>
@@ -27,7 +27,15 @@
           [tips]="tips" [cargando]="cargando" [errores]="errores"
           (navegar)="cambiarVista($event)"></app-inicio-intermedio>
       </section>
-      <section *ngIf="vista==='inicio' && nivel!=='intermedio'">
+      <section *ngIf="vista==='inicio' && nivel==='avanzado'">
+        <app-inicio-avanzado
+          [nombre]="nombre" [rutinas]="rutinas" [registros]="registros"
+          [resumen]="resumenProgreso" [historial]="historial"
+          [recomendacion]="recomendacionAvanzada" [ajuste]="ajuste"
+          [cargando]="cargando" [errores]="errores"
+          (navegar)="cambiarVista($event)"></app-inicio-avanzado>
+      </section>
+      <section *ngIf="vista==='inicio' && nivel!=='intermedio' && nivel!=='avanzado'">
         <div class="tf-hero"><div><span class="tf-eyebrow">TU EVOLUCIÓN COMIENZA AQUÍ</span><h1>¡Hola, {{nombre}}! <span>✦</span></h1><p>{{descripcionNivel}}</p><div class="tf-hero-actions"><button type="button" class="tf-btn tf-btn-light" (click)="cambiarVista('rutinas')">Ver mis rutinas <span>→</span></button><button type="button" class="tf-btn tf-btn-outline-light" (click)="cambiarVista('recomendaciones')">Ver recomendaciones</button></div></div><div class="tf-hero-graphic" aria-hidden="true"><span>TRUEFORM</span><div class="tf-ring"><strong>{{porcentajeMedio}}%</strong><small>media registrada</small></div></div></div>
         <div class="tf-stats"><div class="tf-stat"><span class="tf-stat-icon teal">▤</span><span>Rutinas creadas</span><strong>{{rutinas.length}}</strong><small>Planes en tu cuenta</small></div><div class="tf-stat"><span class="tf-stat-icon blue">◎</span><span>Entrenamientos</span><strong>{{registros.length}}</strong><small>Sesiones registradas</small></div><div class="tf-stat"><span class="tf-stat-icon orange">↗</span><span>Cumplimiento medio</span><strong>{{porcentajeMedio}}%</strong><small>Calculado con tus progresos</small></div><div class="tf-stat"><span class="tf-stat-icon purple">◇</span><span>Último peso</span><strong>{{ultimoPeso!==null?(ultimoPeso | number:'1.1-1'):'—'}}</strong><small>{{ultimoPeso!==null?'Kilogramos registrados':'Aún sin registros'}}</small></div></div>
         <div class="tf-two-col">
@@ -35,6 +43,91 @@
           <article class="tf-card"><div class="tf-card-head"><div><span class="tf-kicker">SEGUIMIENTO</span><h2>Tu constancia</h2></div><button type="button" class="tf-text-button" (click)="cambiarVista('progreso')">Ver informes →</button></div><div class="tf-progress-big"><div class="tf-progress-number">{{porcentajeMedio}}%</div><p>Cumplimiento promedio de los registros disponibles</p><div class="tf-progress-track"><span [style.width.%]="porcentajeMedio"></span></div></div><div class="tf-soft-info" *ngIf="resumenProgreso">{{resumenProgreso.mensaje || (resumenProgreso.hayDatos ? 'Resumen de avance disponible' : 'Registra un progreso para ver un resumen completo.')}}</div><p class="tf-small" *ngIf="cargando['resumen']">Consultando resumen en la API...</p><p class="tf-error" *ngIf="errores['resumen']">{{errores['resumen']}}</p></article>
         </div>
         <div class="tf-shortcuts"><button (click)="cambiarVista('tips')" type="button"><span>☀</span><strong>Consejo del día</strong><small>Tips reales de la API</small><b>↗</b></button><button (click)="cambiarVista('chat')" type="button"><span>◈</span><strong>Asistente IA</strong><small>Resuelve tus dudas</small><b>↗</b></button><button (click)="cambiarVista('calendario')" type="button"><span>▦</span><strong>Mi calendario</strong><small>Organiza la semana</small><b>↗</b></button></div>
+      </section>
+
+      <!-- AVANZADO: PLAN DE PROGRESIÓN. Registros reales + borrador local explícito. -->
+      <section *ngIf="nivel==='avanzado' && vista==='progresion'">
+        <div class="tf-page-heading"><div><span class="tf-kicker">NIVEL AVANZADO · FUERZA</span><h1>Plan de progresión</h1><p>Compara cargas registradas y organiza un borrador de cuatro semanas.</p></div><button class="tf-btn tf-btn-outline" type="button" (click)="cambiarVista('rutinas')">Abrir mis rutinas →</button></div>
+        <div class="tf-two-col">
+          <article class="tf-card"><div class="tf-card-head"><h2>Historial por ejercicio</h2><small>Datos reales</small></div>
+            <div class="tf-fields"><label>Ejercicio<select [(ngModel)]="ejercicioProgresionId"><option [ngValue]="0">Todos los ejercicios</option><option *ngFor="let e of ejerciciosConHistorial" [ngValue]="e.id">{{e.nombre}}</option></select></label></div>
+            <div class="tf-table-wrap"><table class="tf-table"><thead><tr><th>Fecha</th><th>Ejercicio</th><th>Series × Reps</th><th>Carga</th></tr></thead><tbody><tr *ngFor="let r of registrosDeProgresion.slice(0,15)"><td>{{r.fecha}}</td><td>{{r.nombreEjercicio}}</td><td>{{r.series}} × {{r.repeticiones}}</td><td>{{r.pesoKg}} kg</td></tr></tbody></table></div>
+            <p class="tf-empty" *ngIf="!registrosDeProgresion.length">Todavía no hay registros de cargas. Registra un entrenamiento desde «Panel de registros».</p>
+          </article>
+          <article class="tf-card"><div class="tf-card-head"><h2>Borrador de cuatro semanas</h2><span class="tf-chip">Solo local</span></div>
+            <p class="tf-subtle">Este formulario recupera la idea del IHC original. El backend vigente NO tiene un endpoint para guardar planes de progresión: aquí se guarda únicamente en el navegador.</p>
+            <div class="tf-fields">
+              <label>Ejercicio<select [(ngModel)]="planAvanzado.idEjercicio"><option [ngValue]="0">Selecciona un ejercicio</option><option *ngFor="let e of ejercicios" [ngValue]="e.idEjercicio">{{e.nombreEjercicio}}</option></select></label>
+              <div class="tf-field-row"><label>Carga actual (kg)<input type="number" min="0" step="0.5" [(ngModel)]="planAvanzado.cargaActual"></label><label>Carga objetivo (kg)<input type="number" min="0.5" step="0.5" [(ngModel)]="planAvanzado.cargaObjetivo"></label></div>
+              <label>Semana 1<input maxlength="150" [(ngModel)]="planAvanzado.semana1" placeholder="Ej. Evaluación de técnica"></label>
+              <label>Semana 2<input maxlength="150" [(ngModel)]="planAvanzado.semana2" placeholder="Ej. Ajustar la intensidad"></label>
+              <label>Semana 3<input maxlength="150" [(ngModel)]="planAvanzado.semana3" placeholder="Ej. Revisar repeticiones"></label>
+              <label>Semana 4<input maxlength="150" [(ngModel)]="planAvanzado.semana4" placeholder="Ej. Semana de recuperación"></label>
+              <button class="tf-btn tf-btn-primary" type="button" (click)="guardarPlanAvanzadoLocal()">Guardar borrador en este navegador</button>
+              <button class="tf-btn tf-btn-outline" type="button" (click)="borrarPlanAvanzadoLocal()" [disabled]="!planGuardadoLocal">Eliminar borrador local</button>
+              <p class="tf-error" *ngIf="errores['planLocal']">{{errores['planLocal']}}</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- AVANZADO: COMPARACIÓN MENSUAL EXISTENTE EN LA API -->
+      <section *ngIf="nivel==='avanzado' && vista==='comparar'">
+        <div class="tf-page-heading"><div><span class="tf-kicker">NIVEL AVANZADO · EVOLUCIÓN</span><h1>Comparar rendimiento</h1><p>El backend compara dos meses a partir de tus progresos registrados.</p></div></div>
+        <article class="tf-card tf-narrow">
+          <div class="tf-field-row tf-fields"><label>Mes base<input type="month" [(ngModel)]="mesBase"></label><label>Mes a comparar<input type="month" [(ngModel)]="mesComparado"></label></div>
+          <button class="tf-btn tf-btn-primary tf-gap-top" type="button" [disabled]="cargando['comparacion']" (click)="comparar()">{{cargando['comparacion']?'Comparando...':'Comparar meses (GET)'}}</button>
+          <p class="tf-error" *ngIf="errores['comparacion']">{{errores['comparacion']}}</p>
+          <div *ngIf="comparacion" class="tf-advanced-result"><p>{{comparacion.mensaje || (comparacion.hayDatos?'Comparación calculada por la API':'No hay registros suficientes para comparar.') }}</p>
+            <div *ngIf="comparacion.hayDatos" class="tf-stats tf-advanced-small-stats">
+              <div class="tf-stat"><span>Diferencia en peso promedio</span><strong>{{comparacion.diferenciaPesoPromedioKg==null?'—':((comparacion.diferenciaPesoPromedioKg | number:'1.1-1')+' kg')}}</strong></div>
+              <div class="tf-stat"><span>Diferencia en cumplimiento</span><strong>{{comparacion.diferenciaCumplimientoPuntos==null?'—':((comparacion.diferenciaCumplimientoPuntos | number:'1.0-1')+' pp')}}</strong></div>
+            </div>
+            <div *ngFor="let m of comparacion.meses || []" class="tf-plan"><div class="tf-plan-icon">▥</div><div><strong>{{m.periodo || 'Mes consultado'}}</strong><span>Registros: {{m.registrosProgreso}} · Cumplimiento: {{m.cumplimientoPromedio==null?'Sin dato':((m.cumplimientoPromedio | number:'1.0-1')+'%')}}</span></div></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- AVANZADO: HISTORIAL, SIN FINGIR TIEMPOS O RACHAS -->
+      <section *ngIf="nivel==='avanzado' && vista==='historial'">
+        <div class="tf-page-heading"><div><span class="tf-kicker">NIVEL AVANZADO · DATOS</span><h1>Historial físico</h1><p>Registros de progreso y entrenamientos recuperados desde PostgreSQL.</p></div><button type="button" class="tf-btn tf-btn-outline" (click)="cambiarVista('historial')">↻ Actualizar</button></div>
+        <article class="tf-card"><h2>Historial de progreso</h2><p class="tf-small" *ngIf="cargando['historial']">Consultando la API...</p><p class="tf-error" *ngIf="errores['historial']">{{errores['historial']}}</p>
+          <div class="tf-table-wrap"><table class="tf-table"><thead><tr><th>Fecha</th><th>Rutina</th><th>Cumplimiento</th><th>Peso</th><th>Observación</th></tr></thead><tbody>
+            <tr *ngFor="let h of historial?.historial || []"><td>{{h.fecha}}</td><td>{{h.rutina || '—'}}</td><td>{{h.porcentajeCumplimiento==null?'—':(h.porcentajeCumplimiento+'%')}}</td><td>{{h.pesoActual==null?'—':(h.pesoActual+' kg')}}</td><td>{{h.observaciones || '—'}}</td></tr>
+          </tbody></table></div><p class="tf-empty" *ngIf="!historial?.historial?.length && !cargando['historial']">{{historial?.mensaje || 'No hay progresos registrados todavía.'}}</p>
+        </article>
+        <article class="tf-card tf-gap-top"><h2>Entrenamientos registrados ({{registros.length}})</h2><div class="tf-table-wrap"><table class="tf-table"><thead><tr><th>Fecha</th><th>Rutina</th><th>Ejercicio</th><th>Series × reps</th><th>Peso</th></tr></thead><tbody><tr *ngFor="let r of registros"><td>{{r.fecha}}</td><td>{{r.nombreRutina}}</td><td>{{r.nombreEjercicio}}</td><td>{{r.series}} × {{r.repeticiones}}</td><td>{{r.pesoKg}} kg</td></tr></tbody></table></div><p class="tf-empty" *ngIf="!registros.length">Todavía no existen registros de entrenamiento.</p></article>
+      </section>
+
+      <!-- AVANZADO: AJUSTE REAL DEL VOLUMEN DE UNA RUTINA, VIA PUT -->
+      <section *ngIf="nivel==='avanzado' && vista==='volumen'">
+        <div class="tf-page-heading"><div><span class="tf-kicker">NIVEL AVANZADO · PLANIFICACIÓN</span><h1>Ajustar volumen</h1><p>Modifica las series y repeticiones de ejercicios asignados, usando PUT en el backend.</p></div><button type="button" class="tf-btn tf-btn-outline" (click)="cambiarVista('rutinas')">Ver rutinas →</button></div>
+        <div class="tf-two-col">
+          <article class="tf-card"><h2>1. Selecciona un ejercicio de tu rutina</h2><div class="tf-fields">
+            <label>Rutina<select [ngModel]="rutinaSeleccionada" (ngModelChange)="seleccionarRutina($event)"><option [ngValue]="0">Seleccionar...</option><option *ngFor="let r of rutinas" [ngValue]="r.idRutina">{{r.nombreRutina}}</option></select></label>
+            <label>Ejercicio asignado<select [ngModel]="volumenSeleccionadoId" (ngModelChange)="prepararVolumen($event)"><option [ngValue]="0">Seleccionar...</option><option *ngFor="let e of detalleRutina" [ngValue]="e.idRutinaEjercicio">{{nombreDeEjercicio(e.idEjercicio)}} · {{e.series}} × {{e.repeticiones}}</option></select></label>
+            <p *ngIf="cargando['detalleRutina']" class="tf-small">Consultando ejercicios...</p>
+            <p class="tf-empty" *ngIf="!detalleRutina.length && !cargando['detalleRutina']">Esta rutina no tiene ejercicios. Agrégalos primero desde «Mis rutinas».</p>
+          </div></article>
+          <article class="tf-card"><h2>2. Ajusta la carga de trabajo programada</h2><div class="tf-fields">
+            <div class="tf-field-row"><label>Series<input type="number" min="1" max="100" [(ngModel)]="seriesVolumen" [disabled]="!volumenSeleccionadoId"></label><label>Repeticiones<input type="number" min="1" max="1000" [(ngModel)]="repeticionesVolumen" [disabled]="!volumenSeleccionadoId"></label></div>
+            <p class="tf-subtle" *ngIf="volumenSeleccionado">Se conservarán el ejercicio, día y descanso del registro original. Las cargas realizadas se registran por separado en los entrenamientos.</p>
+            <button class="tf-btn tf-btn-primary" type="button" [disabled]="!volumenSeleccionadoId || cargando['guardarVolumen']" (click)="guardarVolumen()">{{cargando['guardarVolumen']?'Guardando...':'Guardar cambios en PostgreSQL (PUT)'}}</button>
+            <p class="tf-error" *ngIf="errorVolumen || errores['guardarVolumen']">{{errorVolumen || errores['guardarVolumen']}}</p>
+          </div></article>
+        </div>
+        <p class="tf-note">El IHC original tenía controles de volumen por grupo muscular. La API actual no almacena metas de volumen por músculo: esta implementación guarda de verdad las series/repeticiones de cada ejercicio de la rutina, sin inventar un endpoint.</p>
+      </section>
+
+      <!-- AVANZADO: EXPORTAR CSV REAL -->
+      <section *ngIf="nivel==='avanzado' && vista==='exportar'">
+        <div class="tf-page-heading"><div><span class="tf-kicker">NIVEL AVANZADO · INFORMES</span><h1>Exportar progreso</h1><p>Descarga un archivo CSV generado por Spring Boot con los progresos disponibles.</p></div></div>
+        <article class="tf-card tf-narrow"><h2>Vista previa de tus datos</h2><p *ngIf="!resumenProgreso?.hayDatos">{{resumenProgreso?.mensaje || 'Aún no hay registros suficientes para exportar.'}}</p>
+          <dl class="tf-advanced-summary" *ngIf="resumenProgreso?.hayDatos"><dt>Registros de progreso</dt><dd>{{resumenProgreso?.registrosProgreso}}</dd><dt>Registros con peso</dt><dd>{{resumenProgreso?.registrosConPeso ?? '—'}}</dd><dt>Peso promedio</dt><dd>{{resumenProgreso?.pesoPromedioKg == null ? '—' : ((resumenProgreso?.pesoPromedioKg | number:'1.1-1') + ' kg')}}</dd><dt>Cumplimiento promedio</dt><dd>{{resumenProgreso?.cumplimientoPromedio==null?'—':((resumenProgreso?.cumplimientoPromedio | number:'1.0-1')+'%')}}</dd></dl>
+          <button type="button" class="tf-btn tf-btn-primary tf-gap-top" [disabled]="!resumenProgreso?.hayDatos || cargando['exportar']" (click)="exportar()">{{cargando['exportar']?'Descargando...':'Descargar CSV desde la API'}}</button>
+          <p class="tf-error" *ngIf="errores['exportar']">{{errores['exportar']}}</p>
+          <p class="tf-note">Si todavía no hay datos, el endpoint de exportación puede responder HTTP 422. No generamos resultados ficticios.</p>
+        </article>
       </section>
 
       <!-- INTERMEDIO: CREACIÓN Y EDICIÓN VERDADERAS (POST y PUT /api/rutinas) -->
