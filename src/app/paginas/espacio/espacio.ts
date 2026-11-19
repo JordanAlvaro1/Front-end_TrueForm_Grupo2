@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { InicioIntermedio } from './inicio-intermedio/inicio-intermedio';
+import { InicioAvanzado } from './inicio-avanzado/inicio-avanzado';
 import { Observable, timeout } from 'rxjs';
 import { EjercicioDTO, ProgresoDTO, RegistroEntrenamientoDTO, RutinaDTO, UsuarioDTO } from '../../model/trueform.model';
 import { RutinaService } from '../../servicios/rutina.service';
@@ -20,11 +21,11 @@ import {
 } from '../../model/funciones.model';
 import { ObjetivoDTO } from '../../model/trueform.model';
 
-type Vista = 'inicio'|'gestion'|'cambios'|'rutinas'|'calendario'|'progreso'|'ejercicios'|'recomendaciones'|'tips'|'glosario'|'chat'|'tecnica'|'perfil';
+type Vista = 'inicio'|'gestion'|'cambios'|'rutinas'|'calendario'|'progreso'|'ejercicios'|'recomendaciones'|'tips'|'glosario'|'chat'|'tecnica'|'perfil'|'progresion'|'comparar'|'historial'|'volumen'|'exportar';
 
 @Component({
   selector:'app-espacio', standalone:true,
-  imports:[RouterLink, CommonModule,FormsModule,MatButtonModule,InicioIntermedio],
+  imports:[RouterLink, CommonModule,FormsModule,MatButtonModule,InicioIntermedio,InicioAvanzado],
   templateUrl:'./espacio.html',styleUrl:'./espacio.css'
 })
 export class Espacio implements OnInit {
@@ -111,10 +112,40 @@ export class Espacio implements OnInit {
     {vista:'glosario',icono:'A',nombre:'Glosario',grupo:'FUNCIONES NUEVAS'},
     {vista:'perfil',icono:'◉',nombre:'Mi perfil',grupo:'CUENTA'}
   ];
+
+  // Experiencia avanzada de IHC: las nuevas historias de usuario permanecen disponibles.
+  private readonly menuAvanzado: Array<{vista:Vista;icono:string;nombre:string;grupo:string}> = [
+    {vista:'inicio',icono:'⌂',nombre:'Panel avanzado',grupo:'NIVEL AVANZADO'},
+    {vista:'progresion',icono:'↗',nombre:'Plan de progresión',grupo:'NIVEL AVANZADO'},
+    {vista:'comparar',icono:'▥',nombre:'Comparar rendimiento',grupo:'NIVEL AVANZADO'},
+    {vista:'historial',icono:'◷',nombre:'Historial físico',grupo:'NIVEL AVANZADO'},
+    {vista:'volumen',icono:'≡',nombre:'Ajustar volumen',grupo:'NIVEL AVANZADO'},
+    {vista:'recomendaciones',icono:'✦',nombre:'Recomendación avanzada',grupo:'NIVEL AVANZADO'},
+    {vista:'tecnica',icono:'▷',nombre:'Optimizar técnica y videos',grupo:'NIVEL AVANZADO'},
+    {vista:'chat',icono:'◈',nombre:'Chat IA',grupo:'NIVEL AVANZADO'},
+    {vista:'exportar',icono:'⇩',nombre:'Exportar progreso',grupo:'NIVEL AVANZADO'},
+    {vista:'rutinas',icono:'▤',nombre:'Mis rutinas',grupo:'FUNCIONES NUEVAS'},
+    {vista:'calendario',icono:'▦',nombre:'Calendario',grupo:'FUNCIONES NUEVAS'},
+    {vista:'progreso',icono:'↗',nombre:'Progreso e informes',grupo:'FUNCIONES NUEVAS'},
+    {vista:'ejercicios',icono:'♡',nombre:'Ejercicios y favoritos',grupo:'FUNCIONES NUEVAS'},
+    {vista:'tips',icono:'☀',nombre:'Tips del día',grupo:'FUNCIONES NUEVAS'},
+    {vista:'glosario',icono:'A',nombre:'Glosario',grupo:'FUNCIONES NUEVAS'},
+    {vista:'perfil',icono:'◉',nombre:'Mi perfil',grupo:'CUENTA'}
+  ];
   get menu(): Array<{vista:Vista;icono:string;nombre:string;grupo:string}> {
-    return this.nivel==='intermedio' ? this.menuIntermedio : this.menuBase;
+    return this.nivel==='intermedio' ? this.menuIntermedio : this.nivel==='avanzado' ? this.menuAvanzado : this.menuBase;
   }
   private intermedioCargado = false;
+  // Estado de módulos avanzados. El plan de cuatro semanas se guarda únicamente en este navegador.
+  private avanzadoCargado = false;
+  ejercicioProgresionId = 0;
+  planAvanzado = {idEjercicio:0,cargaActual:0,cargaObjetivo:0,semana1:'',semana2:'',semana3:'',semana4:''};
+  planGuardadoLocal = false;
+  volumenSeleccionadoId = 0;
+  seriesVolumen = 3;
+  repeticionesVolumen = 10;
+  errorVolumen = '';
+
   rutinaEdicionId = 0;
   rutinaEdicion = {nombreRutina:'',descripcion:'',fechaInicio:'',fechaFin:'',estado:'activa'};
   rutinaNueva = {nombreRutina:'',descripcion:'',fechaInicio:this.hoy(),fechaFin:'',estado:'activa'};
@@ -127,6 +158,7 @@ export class Espacio implements OnInit {
     const id = Number(localStorage.getItem('idUsuario'));
     if (!Number.isSafeInteger(id) || id < 1) { void this.router.navigateByUrl('/login'); return; }
     this.idUsuario = id;
+    this.leerPlanAvanzadoLocal();
     this.recargarBase();
     this.cargarVista('inicio');
   }
@@ -142,6 +174,18 @@ export class Espacio implements OnInit {
   get nombreRutina(): string {return this.rutinas.find(r=>r.idRutina===this.rutinaSeleccionada)?.nombreRutina||'Selecciona una rutina';}
   get nivelEtiqueta(): string {return this.nivel.charAt(0).toUpperCase()+this.nivel.slice(1);}
   get volumenTotal(): number {return this.registros.reduce((acc,r)=>acc+Number(r.series||0)*Number(r.repeticiones||0)*Number(r.pesoKg||0),0);}
+  get registrosDeProgresion(): RegistroEntrenamientoDTO[] {
+    return [...this.registros].filter(r=>!this.ejercicioProgresionId || r.idEjercicio===Number(this.ejercicioProgresionId))
+      .sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+  }
+  get ejerciciosConHistorial(): Array<{id:number;nombre:string}> {
+    const ids=new Set<number>();
+    return this.registros.filter(r=>{if(ids.has(r.idEjercicio))return false;ids.add(r.idEjercicio);return true;})
+      .map(r=>({id:r.idEjercicio,nombre:r.nombreEjercicio})).sort((a,b)=>a.nombre.localeCompare(b.nombre));
+  }
+  get volumenSeleccionado(): RutinaEjercicioDTO | undefined {
+    return this.detalleRutina.find(e=>e.idRutinaEjercicio===Number(this.volumenSeleccionadoId));
+  }
   get descripcionNivel(): string {return this.nivel==='avanzado'?'Analiza tu rendimiento, volumen e historial para planear el siguiente objetivo.':this.nivel==='intermedio'?'Mantén la constancia y organiza tus entrenamientos con recomendaciones según tu progreso.':'Empieza con una rutina clara, aprende la técnica y avanza a tu propio ritmo.';}
 
   private mensajeError(e:unknown):string {
@@ -161,8 +205,8 @@ export class Espacio implements OnInit {
     });
   }
   recargarBase():void {
-    this.intermedioCargado=false;
-    this.pedir('usuario',this.api.buscarUsuario(this.idUsuario),u=>{this.usuario=u;this.objetivoElegido=u.idObjetivo||0;if(this.vista==='inicio'&&this.nivel==='intermedio')this.cargarInicioIntermedio();});
+    this.intermedioCargado=false;this.avanzadoCargado=false;
+    this.pedir('usuario',this.api.buscarUsuario(this.idUsuario),u=>{this.usuario=u;this.objetivoElegido=u.idObjetivo||0;if(this.vista==='inicio'&&this.nivel==='intermedio')this.cargarInicioIntermedio();if(this.vista==='inicio'&&this.nivel==='avanzado')this.cargarInicioAvanzado();});
     this.pedir('rutinas',this.apiRutinas.listarPorUsuario(this.idUsuario),r=>{this.rutinas=r; if(!this.rutinaSeleccionada && r.length){this.seleccionarRutina(r[0].idRutina);} });
     this.pedir('progresos',this.apiProgreso.listarPorUsuario(this.idUsuario),p=>this.progresos=p);
     this.pedir('registros',this.apiRegistros.listarPorUsuario(this.idUsuario),r=>this.registros=r);
@@ -171,6 +215,11 @@ export class Espacio implements OnInit {
   private cargarVista(v:Vista):void {
     if(v==='inicio'||v==='progreso')this.cargarInformes();
     if(v==='inicio'&&this.nivel==='intermedio')this.cargarInicioIntermedio();
+    if(v==='inicio'&&this.nivel==='avanzado')this.cargarInicioAvanzado();
+    if(v==='progresion')this.cargarEjercicios();
+    if(v==='volumen'){this.cargarEjercicios();if(!this.rutinaSeleccionada && this.rutinas.length)this.seleccionarRutina(this.rutinas[0].idRutina);}
+    if(v==='historial')this.pedir('historial',this.funciones.historialProgreso(this.idUsuario),h=>this.historial=h);
+    if(v==='exportar')this.pedir('resumen',this.funciones.resumenProgreso(this.idUsuario),r=>this.resumenProgreso=r);
     if(v==='rutinas'){this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),r=>this.rutinaSemanal=r);this.cargarEjercicios();}
     if(v==='gestion')this.cargarEjercicios();
     if(v==='cambios'){this.cargarEjercicios();if(!this.rutinaSeleccionada && this.rutinas.length)this.seleccionarRutina(this.rutinas[0].idRutina);}
@@ -190,6 +239,61 @@ export class Espacio implements OnInit {
     this.pedir('recomendacionProgreso',this.funciones.recomendacionProgreso(this.idUsuario),r=>this.recomendacionProgreso=r);
     this.pedir('ajuste',this.funciones.ajusteRutina(this.idUsuario),r=>this.ajuste=r);
     this.pedir('tips',this.funciones.tipsDelDia(),r=>this.tips=r);
+  }
+  private cargarInicioAvanzado():void {
+    if(this.avanzadoCargado)return;
+    this.avanzadoCargado=true;
+    this.pedir('historial',this.funciones.historialProgreso(this.idUsuario),h=>this.historial=h);
+    this.pedir('recomendacionAvanzada',this.funciones.recomendacionAvanzada(this.idUsuario),r=>this.recomendacionAvanzada=r);
+    this.pedir('ajuste',this.funciones.ajusteRutina(this.idUsuario),r=>this.ajuste=r);
+  }
+  private get planKey(): string {return `tf_plan_avanzado_local_${this.idUsuario}`;}
+  private leerPlanAvanzadoLocal():void {
+    try {
+      const guardado=localStorage.getItem(this.planKey);
+      if(!guardado)return;
+      const datos=JSON.parse(guardado) as Partial<typeof this.planAvanzado>;
+      if(!datos || typeof datos!=='object')return;
+      this.planAvanzado={
+        idEjercicio:Number(datos.idEjercicio)||0,cargaActual:Number(datos.cargaActual)||0,
+        cargaObjetivo:Number(datos.cargaObjetivo)||0,semana1:String(datos.semana1||''),
+        semana2:String(datos.semana2||''),semana3:String(datos.semana3||''),semana4:String(datos.semana4||'')
+      };
+      this.planGuardadoLocal=true;
+    }catch {this.planGuardadoLocal=false;}
+  }
+  guardarPlanAvanzadoLocal():void {
+    if(!this.planAvanzado.idEjercicio || !Number.isFinite(Number(this.planAvanzado.cargaActual)) ||
+       !Number.isFinite(Number(this.planAvanzado.cargaObjetivo)) ||
+       Number(this.planAvanzado.cargaActual)<0 || Number(this.planAvanzado.cargaObjetivo)<=0){
+      this.errores['planLocal']='Selecciona un ejercicio y usa cargas válidas (meta mayor que 0).';return;
+    }
+    delete this.errores['planLocal'];
+    try {localStorage.setItem(this.planKey,JSON.stringify(this.planAvanzado));this.planGuardadoLocal=true;this.aviso='Borrador de progresión guardado SOLO en este navegador (no en PostgreSQL).';}
+    catch {this.errores['planLocal']='No fue posible almacenar el borrador en este navegador.';}
+  }
+  borrarPlanAvanzadoLocal():void {
+    localStorage.removeItem(this.planKey);this.planAvanzado={idEjercicio:0,cargaActual:0,cargaObjetivo:0,semana1:'',semana2:'',semana3:'',semana4:''};
+    this.planGuardadoLocal=false;this.aviso='Borrador local eliminado.';
+  }
+  prepararVolumen(id:number):void {
+    this.volumenSeleccionadoId=Number(id);this.errorVolumen='';
+    const seleccionado=this.volumenSeleccionado;
+    if(seleccionado){this.seriesVolumen=seleccionado.series;this.repeticionesVolumen=seleccionado.repeticiones;}
+  }
+  guardarVolumen():void {
+    const original=this.volumenSeleccionado;
+    if(!original || !Number.isInteger(Number(this.seriesVolumen)) || Number(this.seriesVolumen)<1 || Number(this.seriesVolumen)>100 ||
+      !Number.isInteger(Number(this.repeticionesVolumen)) || Number(this.repeticionesVolumen)<1 || Number(this.repeticionesVolumen)>1000){
+      this.errorVolumen='Selecciona un ejercicio y configura entre 1–100 series y 1–1000 repeticiones.';return;
+    }
+    if(!confirm('¿Guardar el ajuste de series y repeticiones de esta rutina en PostgreSQL?'))return;
+    this.errorVolumen='';
+    this.pedir('guardarVolumen',this.funciones.modificarEjercicio({...original,series:Number(this.seriesVolumen),repeticiones:Number(this.repeticionesVolumen)}),()=>{
+      this.aviso='Volumen del ejercicio actualizado en PostgreSQL.';
+      const idRutina=this.rutinaSeleccionada;this.seleccionarRutina(idRutina);
+      this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),r=>this.rutinaSemanal=r);
+    });
   }
   editarRutina(id:number):void {
     this.rutinaEdicionId=Number(id);
@@ -265,7 +369,7 @@ export class Espacio implements OnInit {
     this.pedir('ajuste',this.funciones.ajusteRutina(this.idUsuario),r=>this.ajuste=r);
   }
   seleccionarRutina(id:number):void {
-    this.rutinaSeleccionada=Number(id);this.detalleRutina=[];this.guiado=null;this.posicionGuia=0;this.ejercicioACambiar=0;this.ejercicioReemplazo=0;this.alternativasCambio=[];
+    this.rutinaSeleccionada=Number(id);this.prepararVolumen(0);this.detalleRutina=[];this.guiado=null;this.posicionGuia=0;this.ejercicioACambiar=0;this.ejercicioReemplazo=0;this.alternativasCambio=[];
     if(this.rutinaSeleccionada) this.pedir('detalleRutina',this.funciones.ejerciciosDeRutina(this.rutinaSeleccionada),d=>this.detalleRutina=d);
   }
   asignar():void {

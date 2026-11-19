@@ -31,3 +31,6 @@ button {cursor:pointer}
 .tf-alternative-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .tf-alternative-chips button{background:#eaf8f2;color:#0b796b;border:1px solid #b8e2d8;padding:8px 10px;border-radius:9px;font-size:11px;font-weight:750}
 .tf-alternative-chips button:hover{background:#d5f2e8}
+
+/* Módulos específicos del nivel avanzado. No modifican el diseño intermedio. */
+.tf-main-avanzado{max-width:1530px}.tf-gap-top{margin-top:17px}.tf-advanced-result{padding-top:16px}.tf-advanced-small-stats{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:15px}.tf-advanced-small-stats .tf-stat{min-height:125px}.tf-advanced-summary{display:grid;grid-template-columns:1fr 1fr;gap:11px;font-size:13px;margin-top:20px}.tf-advanced-summary dt{color:#7e9798}.tf-advanced-summary dd{margin:0;font-weight:800;color:#08786d;text-align:right}.tf-main-avanzado .tf-table-wrap{margin-top:18px}@media(max-width:650px){.tf-advanced-small-stats{grid-template-columns:1fr}.tf-advanced-summary{grid-template-columns:1fr 1fr}}
