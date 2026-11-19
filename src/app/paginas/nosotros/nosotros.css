@@ -1,0 +1,21 @@
+/* ===== TrueForm: Nosotros ===== */
+/* ===== Sobre nosotros ===== */
+.about-split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.about-logo {
+  background: var(--white); border-radius: 18px; padding: 30px;
+  display: grid; place-items: center; box-shadow: var(--shadow);
+}
+.about-logo .big-badge {
+  width: 150px; height: 150px; border-radius: 50%;
+  background: var(--dark); color: var(--teal);
+  display: grid; place-items: center; font-size: 4rem;
+}
+.about-logo h3 { margin-top: 16px; letter-spacing: 4px; color: var(--dark); }
+.about-logo-img { width: 100%; max-width: 320px; border-radius: 12px; }
+.about-text h2 { font-size: 2rem; margin-bottom: 18px; }
+.about-text p { margin-bottom: 14px; font-size: .96rem; }
+.about-text .intro { color: var(--text); }
+
+@media (max-width: 820px) {
+  .about-split { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueForm - Tu entrenador inteligente</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-badge">
+        <img src="fotos/logo.jpeg" alt="TrueForm">
+      </span>
+      TrueForm
+    </a>
+
+    <button type="button" class="nav-toggle" aria-label="Abrir menú" onclick="toggleMenu()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html" class="active">Inicio</a>
+      <a href="html/nosotros.html">Sobre Nosotros</a>
+      <a href="html/beneficios.html">Beneficios</a>
+      <a href="html/contacto.html">Contacto</a>
+      <a href="/login" class="btn-login">Iniciar Sesión</a>
+      <a href="documentos/TrueForm_Presentacion.pdf" 
+        download 
+          class="btn-download">
+          Descargar
+      </a>
+    </nav>
+  </header>
+
+  <!-- HERO / CTA PRINCIPAL -->
+  <section class="container hero">
+    <div class="hero-text">
+      <p class="tag">Entrenamiento inteligente con IA</p>
+
+      <h1>
+        Entrena con confianza,<br>
+        <span>alcanza tu mejor versión</span>
+      </h1>
+
+      <p>
+        TrueForm te ayuda a crear rutinas personalizadas, resolver dudas de ejercicios
+        y mejorar tu progreso con apoyo de un asistente inteligente.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/registro" class="btn btn-primary">Empezar ahora</a>
+        <a href="html/beneficios.html" class="btn btn-ghost">Ver beneficios</a>
+      </div>
+    </div>
+
+    <div class="hero-img">
+      <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80" alt="Entrenamiento">
+    </div>
+  </section>
+
+  
+  <!-- PROBLEMA -->
+  <section class="section problem-section">
+    <div class="container">
+      <h2 class="section-title">¿Por qué nace TrueForm?</h2>
+      <p class="section-sub">
+        Muchas personas entrenan sin una guía clara, copian rutinas genéricas o no saben
+        si están haciendo bien los ejercicios.
+      </p>
+      <div class="section-subtitle">
+        <h3>Problemas que enfrentan los usuarios</h3>
+        <p>Estas son las principales dificultades al entrenar sin una guía personalizada.</p>
+      </div>
+      <div class="cards-4">
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-circle-question"></i></div>
+          <h4>Dudas constantes</h4>
+          <p>No saber qué rutina seguir.</p>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <h4>Riesgo de lesión</h4>
+          <p>Mala técnica al entrenar.</p>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-clock"></i></div>
+          <h4>Pérdida de tiempo</h4>
+          <p>Rutinas poco adaptadas.</p>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <h4>Sin progreso claro</h4>
+          <p>No medir avances reales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUCIÓN -->
+  <div class="section-subtitle">
+    <h3>¿Cómo lo resuelve TrueForm?</h3>
+    <p>Nuestra plataforma utiliza inteligencia artificial para ofrecer una experiencia personalizada.</p>
+  </div>
+  <section class="feature-strip">
+    <div class="fs-item">
+      <div class="fs-icon"><i class="fa-solid fa-robot"></i></div>
+      <div>
+        <h4>Asistente IA</h4>
+        <p>Resuelve dudas sobre técnica, músculos trabajados y alternativas.</p>
+      </div>
+    </div>
+
+    <div class="fs-item">
+      <div class="fs-icon"><i class="fa-solid fa-list-check"></i></div>
+      <div>
+        <h4>Rutinas personalizadas</h4>
+        <p>Planes adaptados a tu nivel, objetivo y disponibilidad.</p>
+      </div>
+    </div>
+
+    <div class="fs-item">
+    <div class="fs-icon">
+        <i class="fa-solid fa-arrow-trend-up"></i>
+    </div>
+    <div>
+        <h4>Progreso</h4>
+        <p>Visualiza tu evolución con métricas y gráficos motivadores.</p>
+    </div>
+</div>
+  </section>
+
+  <!-- CTA INTERMEDIO -->
+  <section class="section cta-middle">
+    <div class="container cta-box">
+      <div>
+        <h2>Empieza con una rutina hecha para ti</h2>
+        <p>Regístrate y accede a una experiencia personalizada según tu nivel.</p>
+      </div>
+      <a href="/registro" class="btn btn-primary">Crear cuenta gratis</a>
+    </div>
+  </section>
+
+  <!-- BENEFICIOS -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Beneficios principales</h2>
+      <p class="section-sub">
+        TrueForm organiza tu entrenamiento y te acompaña antes, durante y después de cada sesión.
+      </p>
+
+      <div class="cards-4">
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-bolt"></i></div>
+          <h4>Entrena mejor</h4>
+          <p>Rutinas claras y ordenadas.</p>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-book-open"></i></div>
+          <h4>Aprende técnica</h4>
+          <p>Explicaciones simples.</p>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-layer-group"></i></div>
+          <h4>Según tu nivel</h4>
+          <p>Principiante, intermedio o avanzado.</p>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          <h4>Mide tu progreso</h4>
+          <p>Seguimiento de avances.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIANZA / TRUST TÉCNICO -->
+  <section class="section trust-section">
+    <div class="container">
+      <h2 class="section-title">Una plataforma confiable para entrenar</h2>
+      <p class="section-sub">
+        TrueForm combina tecnología, personalización y contenido orientado a mejorar la experiencia de entrenamiento.
+      </p>
+
+      <div class="trust-metrics">
+        <div>
+          <strong>3</strong>
+          <span>niveles de usuario</span>
+        </div>
+
+        <div>
+          <strong>24/7</strong>
+          <span>consultas con IA</span>
+        </div>
+
+        <div>
+          <strong>100%</strong>
+          <span>rutinas adaptadas</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEÑAS -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Lo que opinan los usuarios sobre nosotros</h2>
+
+      <div class="cards-4">
+        <div class="mini-card">
+          <h4>carlos_fit</h4>
+          <h4 class="stars">★★★★★</h4>
+          <p>“TrueForm me ayudó a organizar mis rutinas semanales y llevar un seguimiento claro de mi progreso. Ahora entreno con más disciplina y no pierdo mis registros.”</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>ana_runner</h4>
+          <h4 class="stars">★★★★★</h4>
+          <p>“La interfaz es muy intuitiva y puedo revisar mis ejercicios desde cualquier dispositivo. Me gustaría tener más opciones de personalización, pero en general la experiencia es excelente.”</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>miguelgym</h4>
+          <h4 class="stars">★★★★★</h4>
+          <p>“Antes anotaba mis entrenamientos en papel y era un desastre. Con TrueForm puedo ver mis avances y mantener mis objetivos siempre visibles.”</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>valeria_active</h4>
+          <h4 class="stars">★★★★★</h4>
+          <p>“Lo que más me gusta es la facilidad para registrar mis sesiones y monitorear mi rendimiento. La aplicación hace que el seguimiento de mis metas sea mucho más sencillo.”</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPO -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Conoce a nuestro equipo</h2>
+      <p class="section-sub">Las personas detrás de TrueForm.</p>
+
+      <div class="team-grid">
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="fotos/Alvaro%20Erick%20Jordan%20Villa.jpeg" alt="Alvaro Erick Jordan Villa">
+          </div>
+          <h3>Alvaro Erick Jordan Villa</h3>
+          <p>Mi nombre es Alvaro Erick Jordan Villa. Me destaco por trabajar bien en equipo y por mantener siempre una actitud empática. Confío en que nuestro aplicativo TrueForm pueda aportar valor y ser de ayuda en la rutina diaria de nuestros usuarios.</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="fotos/Diego Aaron Grajeda Rossi.jpeg" alt="Diego Aaron Grajeda Rossi">
+          </div>
+          <h3>Diego Aaron Grajeda Rossi</h3>
+          <p>Mi nombre es Diego Aaron Grajeda Rossi, me destaco por ser alguien centrado, determinado a la hora de trabajar en grupo y buscando apoyar a quien necesita de ayuda. Estoy seguro que la app de TrueForm podrá ser de utilidad en su día a día de los usuarios.</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="fotos/Mateo Rentería Caamaño.jpg" alt="Mateo Rentería Caamaño">
+          </div>
+          <h3>Mateo Rentería Caamaño</h3>
+          <p>Mi nombre es Mateo Rentería Caamaño. Me caracterizo por trabajar bien bajo presión y tener una actitud predominantemente positiva. Considero que nuestro aplicativo TrueForm es capaz de aportar un bien en la salud de nuestros usuarios.</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="fotos/Solorzano Espinoza Mauro Waldemar.jpeg" alt="Solorzano Espinoza Mauro Waldemar">
+          </div>
+          <h3>Solorzano Espinoza Mauro Waldemar</h3>
+          <p>Mi nombre es Mauro Waldemar Solorzano Espinoza. Soy una persona proactiva, adaptable y con buena comunicación en el trabajo en equipo. Estoy segura de que nuestro aplicativo TrueForm será una herramienta práctica y confiable que acompañará y apoyará a los usuarios.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="section final-cta">
+    <div class="container">
+      <h2>¿Listo para entrenar de forma segura?</h2>
+      <p>Crea tu cuenta y empieza con una rutina personalizada según tu nivel.</p>
+      <a href="/registro" class="btn btn-primary">Registrarme ahora</a>
+    </div>
+  </section>
+
+  <footer class="footer-main">
+  <div class="footer-container">
+    <div class="footer-col">
+      <img src="fotos/logo.jpeg" alt="TrueForm" class="footer-logo">
+      <h3>TrueForm</h3>
+      <p>
+        Entrena con confianza gracias a un asistente inteligente que te recomendara rutinas personalizadas y responde tus dudas 
+      </p>
+    </div>
+    <div class="footer-col">
+      <h4>Enlaces rápidos</h4>
+      <a href="index.html">Inicio</a>
+      <a href="html/nosotros.html">Sobre Nosotros</a>
+      <a href="html/beneficios.html">Beneficios</a>
+      <a href="html/contacto.html">Contacto</a>
+      <a href="/registro">Registrarme</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <p><i class="fa-solid fa-envelope"></i> support@trueform.com</p>
+      <p><i class="fa-solid fa-phone"></i> +51 954 245 134</p>
+      <p><i class="fa-solid fa-location-dot"></i> Av. Nicolás Dueñas 325</p>
+    </div>
+    <div class="footer-col">
+      <h4>Síguenos</h4>
+      <div class="footer-social">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-x-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <p>Descubre consejos y novedades sobre entrenamiento inteligente.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="footer-bottom">
+
+      <p>© 2026 TrueForm — Todos los derechos reservados.</p>
+
+      <div class="footer-links">
+          <a href="#">Términos y Condiciones</a>
+          <a href="#">Política de Privacidad</a>
+      </div>
+
+  </div>
+
+</footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

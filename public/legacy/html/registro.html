@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueForm - Registrarse</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-logo">
+      <span class="logo-badge"><img src="../fotos/logo.jpeg" alt="TrueForm"></span>
+      TrueForm
+    </div>
+    <button type="button" class="nav-toggle" aria-label="Abrir menu" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+    <nav class="nav-links" id="navLinks">
+      <a href="/">Inicio</a>
+      <a href="nosotros.html">Sobre Nosotros</a>
+      <a href="resenas.html">Reseñas</a>
+      <a href="contacto.html">Contacto</a>
+      <a href="/login" class="btn-login">Iniciar Sesión</a>
+      <a href="/registro" class="btn-register active">Registrar</a>
+    </nav>
+  </header>
+
+  <main class="teal-page">
+    <div class="panel panel-split">
+
+      <form onsubmit="event.preventDefault(); alert('Usa el registro o login de Angular: vuelve a /registro o /login'); return false;">
+        <h2>Registrarse en TrueForm</h2>
+        <div class="field">
+          <label for="rNombres">Nombres</label>
+          <input class="line-input" type="text" id="rNombres" name="nombres" required>
+        </div>
+        <div class="field">
+          <label for="rApellidos">Apellidos</label>
+          <input class="line-input" type="text" id="rApellidos" name="apellidos" required>
+        </div>
+        <div class="field">
+          <label for="rEmail">Email</label>
+          <input class="line-input" type="email" id="rEmail" name="email" required>
+        </div>
+        <div class="field">
+          <label for="rNivel">Elija su nivel</label>
+          <select class="line-select" id="rNivel" name="nivel" required>
+            <option value="" selected disabled>Selecciona una opción</option>
+            <option value="principiante">Principiante</option>
+            <option value="intermedio">Intermedio</option>
+            <option value="avanzado">Avanzado</option>
+          </select>
+        </div>
+        <div class="field-row">
+  <div class="field">
+    <label for="rEdad">Edad</label>
+    <input
+      class="line-input"
+      type="number"
+      id="rEdad"
+      name="edad"
+      min="15"
+      max="100"
+      required>
+  </div>
+
+    <div class="field">
+      <label for="rPeso">Peso (kg)</label>
+      <input
+        class="line-input"
+        type="number"
+        id="rPeso"
+        name="peso"
+        step="0.1"
+        min="30"
+        required>
+    </div>
+  </div>
+
+  <div class="field-row">
+
+  <div class="field">
+    <label for="rAltura">Altura (m)</label>
+    <input
+      class="line-input"
+      type="number"
+      id="rAltura"
+      name="altura"
+      step="0.01"
+      min="1"
+      max="2.5"
+      placeholder="Ejemplo: 1.75"
+      required>
+  </div>
+
+  <div class="field">
+    <label for="objetivo">Objetivo</label>
+    <select class="line-select" id="objetivo" name="objetivo" required>
+      <option value="" selected disabled>Selecciona un objetivo</option>
+      <option value="1">Ganar fuerza</option>
+      <option value="2">Ganar masa muscular</option>
+      <option value="3">Perder peso</option>
+      <option value="4">Mejorar resistencia</option>
+      <option value="5">Mantener condición física</option>
+    </select>
+  </div>
+
+</div>
+
+<div class="field">
+  <label for="equipo">Equipo disponible</label>
+  <select class="line-select" id="equipo" name="equipo" required>
+    <option value="" selected disabled>Selecciona tu equipo</option>
+    <option value="Sin equipo">Sin equipo</option>
+    <option value="Mancuernas">Mancuernas</option>
+    <option value="Bandas elásticas">Bandas elásticas</option>
+    <option value="Barra y discos">Barra y discos</option>
+    <option value="Máquinas de gimnasio">Máquinas de gimnasio</option>
+    <option value="Equipo completo">Equipo completo</option>
+  </select>
+</div>
+        <div class="field-row">
+          <div class="field">
+            <label for="rPass">Contraseña</label>
+            <input class="line-input" type="password" id="rPass" name="password" required>
+          </div>
+          <div class="field">
+            <label for="rPass2">Repetir contraseña</label>
+            <input class="line-input" type="password" id="rPass2" name="password2" required>
+          </div>
+        </div>
+        <div class="field">
+        <label>
+          <input type="checkbox" onclick="mostrarPasswordRegistro()">
+            Mostrar contraseña
+        </label>
+</div>
+        <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+        <div class="social-row">
+          <a class="g" href="#" aria-label="Google"><i class="fa-brands fa-google"></i></a>
+          <a class="f" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a class="a" href="#" aria-label="Apple"><i class="fa-brands fa-apple"></i></a>
+        </div>
+      </form>
+
+      <div class="qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=230x230&data=https://trueform.com/registro" alt="Código QR TrueForm">
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">© 2026 TrueForm — Tu entrenador inteligente.</footer>
+  <script src="../js/main.js"></script>
+</body>
+</html>

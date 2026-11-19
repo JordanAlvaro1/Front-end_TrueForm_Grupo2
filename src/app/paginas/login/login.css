@@ -1,0 +1,22 @@
+/* TrueForm · Login | Conserva (submit), ngModel y la llamada al API */
+:host {display:block;font-family:'Segoe UI',Arial,sans-serif}
+.teal-page {background:radial-gradient(circle at 12% 25%,#b9f2df 0,transparent 34%),linear-gradient(135deg,#def6ee,#effaf6);padding:64px 18px;min-height:calc(100vh - 138px)}
+.panel {border:1px solid #daebe5;background:#fff;box-shadow:0 24px 60px rgba(15,75,71,.14);border-radius:28px;padding:44px 48px;width:min(930px,100%)}
+.panel-split {grid-template-columns:minmax(0,1.25fr) minmax(200px,.75fr);gap:34px}
+.panel form {width:100%;max-width:430px}
+.panel h2 {font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.7px;color:#0c4142;line-height:1.2;margin:0 0 28px;font-weight:800}
+.field {margin-bottom:19px}
+.field label {font-size:.84rem;color:#526c70;margin-bottom:8px;font-weight:700}
+.line-input {min-height:47px;padding:11px 13px;border:1px solid #c9ded9;border-radius:11px;background:#f8fbfa;color:#123d42;transition:border-color .2s,box-shadow .2s}
+.line-input:focus {border-color:#0b9990;box-shadow:0 0 0 3px rgba(10,144,136,.12);background:white}
+.check-row {color:#5d7678;margin:13px 0 22px;font-size:.88rem}
+.btn-primary {background:#07877f;color:#fff;min-height:49px;font-weight:800;box-shadow:0 9px 20px rgba(11,137,128,.19)}
+.btn-primary:hover {background:#066e69;color:#fff;transform:translateY(-1px)}
+.btn-primary:disabled {opacity:.65;cursor:wait}
+.qr {padding:24px;background:linear-gradient(150deg,#e5f7f0,#d5efe9);border-radius:22px;min-height:250px}
+.qr img {width:min(240px,85%);height:auto;border-radius:20px;box-shadow:0 12px 30px rgba(6,78,77,.15)}
+.mensaje-api {padding:13px 16px;border-radius:11px;margin:14px 0;background:#e5f7ee;color:#106449;font-size:.89rem}
+.mensaje-api.error {background:#fff1f1;color:#a32936}
+.enlace-auxiliar {display:block;text-align:center;margin-top:19px;color:#087d76;font-size:.88rem;font-weight:750}
+.enlace-auxiliar:hover {text-decoration:underline}
+@media(max-width:760px){.panel{padding:26px 23px}.panel-split{grid-template-columns:1fr}.qr{display:none}.teal-page{padding:26px 14px}}

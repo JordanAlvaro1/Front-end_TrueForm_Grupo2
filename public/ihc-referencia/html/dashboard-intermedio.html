@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueForm - Dashboard Intermedio</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body data-dashboard="intermedio">
+
+<header class="navbar">
+  <a href="../index.html" class="nav-logo">
+    <span class="logo-badge"><img src="../fotos/logo.jpeg" alt="TrueForm"></span>
+    TrueForm
+  </a>
+
+  <nav class="nav-links">
+    <a href="../index.html">Inicio</a>
+    <a href="login.html" class="btn-login">Cerrar Sesión</a>
+  </nav>
+</header>
+
+<main class="app-dashboard">
+
+  <aside class="app-sidebar">
+    <div class="profile-box">
+      <div class="profile-icon">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <h3 id="nombreUsuario">Usuario</h3>
+      <p id="nivelUsuario">Nivel: Sin nivel</p>
+    </div>
+
+    <a class="side-link active" onclick="mostrarPanel('inicio', this)">
+      <i class="fa-solid fa-house"></i> Dashboard
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('rutina', this)">
+      <i class="fa-solid fa-dumbbell"></i> Rutina personalizada
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('crearRutina', this)">
+      <i class="fa-solid fa-pen-to-square"></i> Crear / Modificar rutina
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('progreso', this)">
+      <i class="fa-solid fa-chart-line"></i> Mi progreso
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('cambios', this)">
+      <i class="fa-solid fa-repeat"></i> Cambiar ejercicios
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('tips', this)">
+      <i class="fa-solid fa-lightbulb"></i> Tips intermedios
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('videos', this)">
+      <i class="fa-solid fa-circle-play"></i> Videos
+    </a>
+
+    <a class="side-link" onclick="mostrarPanel('chat', this)">
+      <i class="fa-solid fa-robot"></i> Chat IA
+    </a>
+  </aside>
+
+  <section class="app-content">
+    <h1 id="tituloPanel">Panel Intermedio</h1>
+    <p class="app-subtitle" id="subtituloPanel">
+        Mejora tu rendimiento, evita el estancamiento y controla tu progreso.
+    </p>
+
+    <div id="panelContenido">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fa-solid fa-calendar-check"></i>
+          <h3>5/7</h3>
+          <p>Días completados</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-chart-line"></i>
+          <h3>62%</h3>
+          <p>Progreso semanal</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-fire"></i>
+          <h3>9</h3>
+          <p>Días de racha</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fa-solid fa-repeat"></i>
+          <h3>4</h3>
+          <p>Ejercicios cambiados</p>
+        </div>
+      </div>
+
+      <div class="dashboard-main-grid">
+        <div class="big-card">
+          <h2>Rutina personalizada</h2>
+          <p>Entrenamiento enfocado en fuerza y resistencia.</p>
+
+          <div class="routine-item">✅ Calentamiento dinámico - 8 minutos</div>
+          <div class="routine-item">⬜ Sentadilla con peso - 4 series de 10</div>
+          <div class="routine-item">⬜ Press de pecho - 4 series de 10</div>
+          <div class="routine-item">⬜ Remo con mancuerna - 3 series de 12</div>
+
+          <button class="btn btn-primary" onclick="comenzarRutinaIntermedia()">Comenzar rutina</button>
+        </div>
+
+        <div class="big-card">
+          <h2>Progreso actual</h2>
+          <p>Tu avance semanal va mejorando.</p>
+
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:62%;"></div>
+          </div>
+
+          <h3 class="progress-text">62%</h3>
+          <p>Buen ritmo. Mantén la intensidad.</p>
+        </div>
+      </div>
+
+      <div class="big-card motivation-card">
+        <h2>Recomendación</h2>
+        <p>"Para evitar el estancamiento, aumenta poco a poco la carga o las repeticiones.”</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="../js/main.js"></script>
+
+</body>
+</html>

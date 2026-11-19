@@ -1,0 +1,15 @@
+<header class="navbar"><a class="nav-logo" href="/"><span class="logo-badge"><img src="/fotos/logo.jpeg" alt="TrueForm"></span>TrueForm</a>
+<button type="button" class="nav-toggle" (click)="toggleMenu()" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
+<nav class="nav-links" [class.open]="menuAbierto"><a href="/">Inicio</a><a href="/nosotros">Sobre Nosotros</a><a href="/beneficios">Beneficios</a><a href="/contacto">Contacto</a><a href="/ejercicios">Ejercicios</a><a href="/espacio">Mi espacio</a><a href="/panel">Registrar datos</a><a href="/login">Iniciar sesión</a><a href="/registro" class="btn-register">Registrar</a></nav></header>
+<main class="teal-page"><div class="panel panel-split">
+<form (submit)="iniciar($event)">
+ <h2>Iniciar Sesión TrueForm</h2>
+ <div class="field"><label for="lEmail">Email</label><input class="line-input" type="email" id="lEmail" name="email" required [(ngModel)]="email"></div>
+ <div class="field"><label for="lPass">Contraseña</label><input class="line-input" [type]="verClave ? 'text' : 'password'" id="lPass" name="password" required [(ngModel)]="password"></div>
+ <label class="check-row"><input type="checkbox" name="ver" [(ngModel)]="verClave"> Mostrar contraseña</label>
+ <p *ngIf="mensaje" class="mensaje-api" [class.error]="error">{{mensaje}}</p>
+ <button class="btn btn-primary btn-block" type="submit" [disabled]="procesando">{{procesando ? 'Comprobando...' : 'Iniciar sesión'}}</button>
+ <a class="enlace-auxiliar" href="/registro">¿Aún no tienes cuenta? Regístrate</a>
+</form>
+<div class="qr"><img src="/fotos/logo.jpeg" alt="Logo TrueForm"></div></div></main>
+<footer class="footer">© 2026 TrueForm — Tu entrenador inteligente.</footer>

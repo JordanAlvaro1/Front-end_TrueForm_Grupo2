@@ -1,0 +1,25 @@
+/* TrueForm · Registro | Conserva (submit), ngModel y la llamada al API */
+:host {display:block;font-family:'Segoe UI',Arial,sans-serif}
+.teal-page {background:radial-gradient(circle at 12% 25%,#b9f2df 0,transparent 34%),linear-gradient(135deg,#def6ee,#effaf6);padding:48px 18px;min-height:calc(100vh - 138px)}
+.panel {border:1px solid #daebe5;background:#fff;box-shadow:0 24px 60px rgba(15,75,71,.14);border-radius:28px;padding:35px 42px;width:min(1050px,100%)}
+.panel-split {grid-template-columns:minmax(0,1.65fr) minmax(175px,.75fr);gap:26px;align-items:start}
+.panel form {min-width:0;width:100%}
+.panel h2 {font-size:clamp(1.6rem,3vw,2.1rem);letter-spacing:-.7px;color:#0c4142;line-height:1.22;margin:0 0 27px;font-weight:800}
+.field {margin-bottom:16px}
+.field-row {gap:14px}
+.field label {color:#526c70;font-size:.82rem;font-weight:700;margin-bottom:7px}
+.line-input,.line-select {width:100%;min-height:46px;padding:10px 13px;border:1px solid #c9ded9;border-radius:11px;background:#f8fbfa;color:#123d42;font:inherit;font-size:.94rem;transition:border-color .2s,box-shadow .2s}
+.line-input:focus,.line-select:focus {border-color:#0b9990;box-shadow:0 0 0 3px rgba(10,144,136,.12);background:white}
+.check-row {margin:12px 0 17px;font-size:.88rem;color:#5d7678}
+.btn-primary {min-height:49px;background:#07877f;color:white;font-weight:800;box-shadow:0 9px 20px rgba(11,137,128,.19)}
+.btn-primary:hover {background:#066e69;color:white;transform:translateY(-1px)}
+.btn-primary:disabled {opacity:.65}
+.qr {padding:18px;background:linear-gradient(150deg,#e5f7f0,#d5efe9);border-radius:22px;min-height:275px;position:sticky;top:100px}
+.qr img {width:min(210px,90%);height:auto;border-radius:18px;box-shadow:0 12px 30px rgba(6,78,77,.15)}
+.mensaje-api {padding:13px 16px;border-radius:11px;margin:14px 0;background:#e5f7ee;color:#106449;font-size:.88rem}
+.mensaje-api.error {background:#fff1f1;color:#a32936}
+.formulario-ayuda {color:#906b16;background:#fff6e5;border-radius:8px;padding:8px 11px;margin-bottom:12px;font-size:.83rem}
+.enlace-auxiliar {display:block;text-align:center;margin-top:18px;color:#087d76;font-size:.88rem;font-weight:750}
+.enlace-auxiliar:hover {text-decoration:underline}
+@media(max-width:850px){.panel-split{grid-template-columns:1fr}.qr{display:none}}
+@media(max-width:600px){.panel{padding:25px 19px}.teal-page{padding:20px 12px}.field-row{grid-template-columns:1fr;gap:0}}

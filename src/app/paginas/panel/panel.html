@@ -1,0 +1,92 @@
+<header class="barra-demo">
+  <a routerLink="/" class="marca"><img src="/fotos/logo.jpeg" alt="TrueForm">TrueForm</a>
+  <nav><a routerLink="/">Inicio</a><a routerLink="/espacio">Experiencia completa</a><a routerLink="/ejercicios">Ejercicios</a><button type="button" (click)="cerrarDemo()">Salir de la demostración</button></nav>
+</header>
+<main class="panel-main">
+  <div class="cabecera">
+    <div><span class="etiqueta">PANEL · CONSULTAS REALES</span><h1>Mi espacio TrueForm</h1>
+      <p *ngIf="usuario">Hola, <strong>{{usuario.nombres}} {{usuario.apellidos}}</strong> · {{usuario.nivel | titlecase}} · Usuario #{{idUsuario}}</p>
+      <p *ngIf="!usuario">Cargando datos del usuario #{{idUsuario}}...</p>
+    </div>
+    <button mat-stroked-button (click)="recargar()">Actualizar datos</button>
+  </div>
+  <p class="seguridad">⚠️ Versión académica local: el login no protege endpoints ni establece una sesión real.</p>
+  <div class="mensaje" *ngIf="aviso" role="status">{{aviso}}</div>
+  <div class="errores" *ngIf="errores.length" role="alert"><p *ngFor="let error of errores">{{error}}</p></div>
+  <div class="espera" *ngIf="cargando"><mat-spinner diameter="25"></mat-spinner><span>Consultando usuario...</span></div>
+
+  <div class="resumen">
+    <mat-card><mat-card-content><span>Rutinas</span><strong>{{rutinas.length}}</strong><small>GET /api/rutinas/usuario/{{idUsuario}}</small></mat-card-content></mat-card>
+    <mat-card><mat-card-content><span>Progresos</span><strong>{{progresos.length}}</strong><small>GET /api/progresos/usuario/{{idUsuario}}</small></mat-card-content></mat-card>
+    <mat-card><mat-card-content><span>Sesiones registradas</span><strong>{{registros.length}}</strong><small>GET /api/registros-entrenamiento/usuario/{{idUsuario}}</small></mat-card-content></mat-card>
+  </div>
+
+  <section class="bloque">
+    <div class="titulo-bloque"><div><h2>Mis rutinas</h2><p>Consulta por usuario + formulario POST.</p></div></div>
+    <mat-card class="tarjeta"><mat-card-content>
+      <div class="tabla-scroll"><table mat-table [dataSource]="rutinas">
+        <ng-container matColumnDef="nombreRutina"><th mat-header-cell *matHeaderCellDef>Nombre</th><td mat-cell *matCellDef="let r"><strong>{{r.nombreRutina}}</strong></td></ng-container>
+        <ng-container matColumnDef="fechaInicio"><th mat-header-cell *matHeaderCellDef>Inicio</th><td mat-cell *matCellDef="let r">{{r.fechaInicio}}</td></ng-container>
+        <ng-container matColumnDef="estado"><th mat-header-cell *matHeaderCellDef>Estado</th><td mat-cell *matCellDef="let r">{{r.estado}}</td></ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnasRutinas"></tr><tr mat-row *matRowDef="let r; columns: columnasRutinas;"></tr>
+        <tr class="mat-row" *matNoDataRow><td class="mat-cell sin-datos" colspan="3">Este usuario todavía no tiene rutinas.</td></tr>
+      </table></div>
+    </mat-card-content></mat-card>
+    <mat-card class="form-card"><mat-card-header><mat-card-title>Crear una rutina</mat-card-title></mat-card-header><mat-card-content>
+      <form (ngSubmit)="crearRutina()" #formRutina="ngForm" class="form-grid">
+        <mat-form-field appearance="outline"><mat-label>Nombre</mat-label><input matInput name="nombreRutina" required maxlength="150" [(ngModel)]="nuevaRutina.nombreRutina"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Fecha de inicio</mat-label><input matInput name="fechaInicio" type="date" required [(ngModel)]="nuevaRutina.fechaInicio"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Fecha de fin (opcional)</mat-label><input matInput name="fechaFin" type="date" [(ngModel)]="nuevaRutina.fechaFin"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Estado</mat-label><mat-select name="estado" [(ngModel)]="nuevaRutina.estado"><mat-option value="activa">Activa</mat-option><mat-option value="pendiente">Pendiente</mat-option><mat-option value="finalizada">Finalizada</mat-option></mat-select></mat-form-field>
+        <mat-form-field appearance="outline" class="largo"><mat-label>Descripción</mat-label><textarea matInput name="descripcion" rows="2" [(ngModel)]="nuevaRutina.descripcion"></textarea></mat-form-field>
+        <button mat-flat-button class="guardar" type="submit" [disabled]="formRutina.invalid || guardandoRutina">{{guardandoRutina?'Guardando...':'Guardar rutina en API'}}</button>
+      </form>
+    </mat-card-content></mat-card>
+  </section>
+
+  <section class="bloque">
+    <div class="titulo-bloque"><div><h2>Mi progreso</h2><p>Registros de peso y cumplimiento.</p></div></div>
+    <mat-card class="tarjeta"><mat-card-content><div class="tabla-scroll"><table mat-table [dataSource]="progresos">
+      <ng-container matColumnDef="fechaRegistro"><th mat-header-cell *matHeaderCellDef>Fecha</th><td mat-cell *matCellDef="let p">{{p.fechaRegistro | date:'dd/MM/yyyy'}}</td></ng-container>
+      <ng-container matColumnDef="idRutina"><th mat-header-cell *matHeaderCellDef>Rutina #</th><td mat-cell *matCellDef="let p">{{p.idRutina}}</td></ng-container>
+      <ng-container matColumnDef="pesoActual"><th mat-header-cell *matHeaderCellDef>Peso (kg)</th><td mat-cell *matCellDef="let p">{{p.pesoActual ?? '—'}}</td></ng-container>
+      <ng-container matColumnDef="porcentajeCumplimiento"><th mat-header-cell *matHeaderCellDef>Avance</th><td mat-cell *matCellDef="let p">{{p.porcentajeCumplimiento ?? 0}}%</td></ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasProgreso"></tr><tr mat-row *matRowDef="let p; columns: columnasProgreso;"></tr>
+      <tr class="mat-row" *matNoDataRow><td class="mat-cell sin-datos" colspan="4">No hay progresos registrados.</td></tr>
+    </table></div></mat-card-content></mat-card>
+    <mat-card class="form-card"><mat-card-header><mat-card-title>Registrar progreso</mat-card-title></mat-card-header><mat-card-content>
+      <form class="form-grid" (ngSubmit)="crearProgreso()" #formProgreso="ngForm">
+        <mat-form-field appearance="outline"><mat-label>Rutina</mat-label><mat-select name="idRutina" required [(ngModel)]="nuevoProgreso.idRutina"><mat-option *ngFor="let r of rutinas" [value]="r.idRutina">{{r.nombreRutina}}</mat-option></mat-select></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Peso actual (kg)</mat-label><input matInput type="number" name="pesoActual" min="0" max="999" step="0.1" [(ngModel)]="nuevoProgreso.pesoActual"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Porcentaje de cumplimiento</mat-label><input matInput type="number" name="porcentaje" required min="0" max="100" [(ngModel)]="nuevoProgreso.porcentajeCumplimiento"></mat-form-field>
+        <mat-form-field appearance="outline" class="largo"><mat-label>Observaciones</mat-label><textarea matInput name="observaciones" [(ngModel)]="nuevoProgreso.observaciones"></textarea></mat-form-field>
+        <button mat-flat-button class="guardar" type="submit" [disabled]="formProgreso.invalid || !rutinas.length || guardandoProgreso">{{guardandoProgreso?'Guardando...':'Guardar progreso'}}</button>
+      </form>
+    </mat-card-content></mat-card>
+  </section>
+
+  <section class="bloque">
+    <div class="titulo-bloque"><div><h2>Historial de entrenamientos</h2><p>Registros de ejercicios completados.</p></div></div>
+    <mat-card class="tarjeta"><mat-card-content><div class="tabla-scroll"><table mat-table [dataSource]="registros">
+      <ng-container matColumnDef="fecha"><th mat-header-cell *matHeaderCellDef>Fecha</th><td mat-cell *matCellDef="let r">{{r.fecha}}</td></ng-container>
+      <ng-container matColumnDef="nombreEjercicio"><th mat-header-cell *matHeaderCellDef>Ejercicio</th><td mat-cell *matCellDef="let r">{{r.nombreEjercicio}}</td></ng-container>
+      <ng-container matColumnDef="series"><th mat-header-cell *matHeaderCellDef>Series</th><td mat-cell *matCellDef="let r">{{r.series}}</td></ng-container>
+      <ng-container matColumnDef="repeticiones"><th mat-header-cell *matHeaderCellDef>Repeticiones</th><td mat-cell *matCellDef="let r">{{r.repeticiones}}</td></ng-container>
+      <ng-container matColumnDef="pesoKg"><th mat-header-cell *matHeaderCellDef>Peso kg</th><td mat-cell *matCellDef="let r">{{r.pesoKg}}</td></ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnasRegistros"></tr><tr mat-row *matRowDef="let r; columns: columnasRegistros;"></tr>
+      <tr class="mat-row" *matNoDataRow><td class="mat-cell sin-datos" colspan="5">Aún no hay entrenamientos registrados.</td></tr>
+    </table></div></mat-card-content></mat-card>
+    <mat-card class="form-card"><mat-card-header><mat-card-title>Registrar entrenamiento</mat-card-title></mat-card-header><mat-card-content>
+      <form class="form-grid" (ngSubmit)="crearRegistro()" #formRegistro="ngForm">
+        <mat-form-field appearance="outline"><mat-label>Rutina</mat-label><mat-select name="rutinaReg" required [(ngModel)]="nuevoRegistro.idRutina"><mat-option *ngFor="let r of rutinas" [value]="r.idRutina">{{r.nombreRutina}}</mat-option></mat-select></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Ejercicio</mat-label><mat-select name="ejercicioReg" required [(ngModel)]="nuevoRegistro.idEjercicio"><mat-option *ngFor="let e of ejercicios" [value]="e.idEjercicio">{{e.nombreEjercicio}}</mat-option></mat-select></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Fecha</mat-label><input matInput name="fechaReg" type="date" required [(ngModel)]="nuevoRegistro.fecha"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Series</mat-label><input matInput type="number" name="seriesReg" required min="1" max="100" [(ngModel)]="nuevoRegistro.series"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Repeticiones</mat-label><input matInput type="number" name="repsReg" required min="1" max="1000" [(ngModel)]="nuevoRegistro.repeticiones"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Peso (kg)</mat-label><input matInput type="number" name="pesoReg" required min="0" max="999999.99" step="0.01" [(ngModel)]="nuevoRegistro.pesoKg"></mat-form-field>
+        <button mat-flat-button class="guardar" type="submit" [disabled]="formRegistro.invalid || !rutinas.length || !ejercicios.length || guardandoRegistro">{{guardandoRegistro?'Guardando...':'Guardar entrenamiento'}}</button>
+      </form>
+    </mat-card-content></mat-card>
+  </section>
+  <p class="pie">Los dashboards originales permanecen en <code>public/legacy/</code> como referencia; estas tablas sí consultan la API real.</p>
+</main>

@@ -1,0 +1,31 @@
+/* TrueForm · Catálogo | Solo presentación */
+:host {display:block;min-height:100vh;background:linear-gradient(180deg,#eaf7f3,#f7faf9 300px);color:#123b41;font-family:'Segoe UI',Arial,sans-serif}
+.barra-demo {background:linear-gradient(110deg,#0c2e36,#0c4545 70%,#0b5753);color:#fff;min-height:76px;padding:14px max(4%,20px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;box-shadow:0 6px 28px rgba(7,49,52,.14)}
+.marca {color:#fff;display:flex;align-items:center;gap:12px;font-size:1.25rem;font-weight:800;letter-spacing:-.4px}
+.marca img {width:42px;height:42px;object-fit:cover;border:2px solid #75d6c4;border-radius:12px}
+.barra-demo nav {display:flex;gap:6px;flex-wrap:wrap}
+.barra-demo nav a {color:#e2f5f1;padding:10px 14px;border-radius:30px;font-size:.92rem;transition:background .2s}
+.barra-demo nav a:hover {background:rgba(255,255,255,.13)}
+.pag-ejercicios {width:min(1190px,calc(100% - 42px));margin:0 auto;padding:34px 0 72px}
+.encabezado {padding:36px 42px;background:linear-gradient(115deg,#093d41,#087a73 85%);color:white;border-radius:25px;margin-bottom:22px;box-shadow:0 14px 35px rgba(15,84,81,.16)}
+.etiqueta {letter-spacing:1.7px;font-size:.72rem;font-weight:800;color:#c6f8ed}
+.encabezado h1 {font-weight:850;font-size:clamp(1.9rem,4vw,2.9rem);letter-spacing:-1px;line-height:1.17;margin:10px 0 12px}
+.encabezado p {max-width:750px;line-height:1.6;color:#e0f4ef;font-size:.96rem}
+.tarjeta-tabla {background:#fff;border:1px solid #dbeae6;border-radius:22px!important;box-shadow:0 12px 36px rgba(13,68,66,.08)!important;padding:18px 20px 14px;overflow:hidden}
+.tarjeta-tabla mat-card-content {padding:0!important}
+.controles {display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin:3px 0 18px}
+.buscar {flex:1;min-width:220px;--mdc-outlined-text-field-outline-color:#c8ddda;--mdc-outlined-text-field-focus-outline-color:#07877f;--mdc-outlined-text-field-focus-label-text-color:#07877f}
+.controles button[mat-stroked-button] {border:1px solid #0b8980;background:#eefaf6;color:#06746e;border-radius:999px;min-height:46px;padding:0 21px;font-weight:800}
+.controles button[mat-stroked-button]:hover {background:#d9f5eb}
+.tabla-scroll {overflow-x:auto;max-width:100%}
+.tabla {width:100%;min-width:690px;background:transparent}
+.tabla th {background:#edf7f4;color:#20655f;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;font-weight:800;padding:17px}
+.tabla td {font-size:.9rem;padding:16px 17px;color:#314e53;border-bottom-color:#e8f0ee}
+.tabla td strong {color:#125653;font-weight:800}
+.tabla tr[mat-row]:hover {background:#f3faf7}
+.vacio {padding:29px!important;color:#658285!important;text-align:center}
+.estado {display:flex;gap:12px;align-items:center;padding:15px 5px;color:#577d7e}
+.alerta {margin:12px 0;background:#fff0f2;color:#99263a;border:1px solid #f1ced4;border-radius:12px;padding:13px 16px}
+.nota {font-size:.84rem;color:#718b8d;margin:18px 4px;line-height:1.6}
+.nota code {background:#e3f0ed;border-radius:5px;padding:4px 6px}
+@media(max-width:680px){.pag-ejercicios{width:calc(100% - 26px);padding-top:20px}.encabezado{padding:28px 22px;border-radius:20px}.tarjeta-tabla{padding:15px 12px}.controles button[mat-stroked-button]{width:100%}.barra-demo nav{gap:0}.barra-demo nav a{padding:8px 9px;font-size:.85rem}}

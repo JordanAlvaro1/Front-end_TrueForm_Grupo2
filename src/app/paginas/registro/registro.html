@@ -1,0 +1,22 @@
+<header class="navbar"><a class="nav-logo" href="/"><span class="logo-badge"><img src="/fotos/logo.jpeg" alt="TrueForm"></span>TrueForm</a>
+<button type="button" class="nav-toggle" (click)="toggleMenu()" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
+<nav class="nav-links" [class.open]="menuAbierto"><a href="/">Inicio</a><a href="/nosotros">Sobre Nosotros</a><a href="/beneficios">Beneficios</a><a href="/contacto">Contacto</a><a href="/ejercicios">Ejercicios</a><a href="/espacio">Mi espacio</a><a href="/panel">Registrar datos</a><a href="/login">Iniciar sesión</a><a href="/registro" class="btn-register">Registrar</a></nav></header>
+<main class="teal-page"><div class="panel panel-split"><form (submit)="registrar($event)">
+<h2>Registrarse en TrueForm</h2>
+<div class="field"><label for="nombres">Nombres</label><input id="nombres" class="line-input" name="nombres" required [(ngModel)]="datos.nombres"></div>
+<div class="field"><label for="apellidos">Apellidos</label><input id="apellidos" class="line-input" name="apellidos" required [(ngModel)]="datos.apellidos"></div>
+<div class="field"><label for="email">Email</label><input id="email" type="email" class="line-input" name="email" required [(ngModel)]="datos.email"></div>
+<div class="field"><label for="nivel">Nivel</label><select id="nivel" class="line-select" name="nivel" required [(ngModel)]="datos.nivel"><option value="">Selecciona un nivel</option><option value="principiante">Principiante</option><option value="intermedio">Intermedio</option><option value="avanzado">Avanzado</option></select></div>
+<div class="field-row"><div class="field"><label for="edad">Edad</label><input type="number" id="edad" name="edad" class="line-input" min="15" max="100" required [(ngModel)]="datos.edad"></div>
+<div class="field"><label for="peso">Peso (kg)</label><input type="number" id="peso" name="peso" step="0.1" min="30" class="line-input" required [(ngModel)]="datos.peso"></div></div>
+<div class="field-row"><div class="field"><label for="altura">Altura (m)</label><input type="number" id="altura" name="altura" min="1" max="2.5" step="0.01" class="line-input" required [(ngModel)]="datos.altura"></div>
+<div class="field"><label for="objetivo">Objetivo</label><select id="objetivo" name="objetivo" class="line-select" required [(ngModel)]="datos.idObjetivo"><option [ngValue]="0" disabled>Selecciona un objetivo</option><option *ngFor="let o of objetivos" [ngValue]="o.idObjetivo">{{o.nombreObjetivo}}</option></select></div></div>
+<p *ngIf="objetivos.length===0" class="formulario-ayuda">No hay objetivos disponibles. Inicia la API y confirma que la tabla de objetivos contenga registros.</p>
+<div class="field"><label for="equipo">Equipo disponible</label><select id="equipo" class="line-select" name="equipo" required [(ngModel)]="datos.equipo"><option value="">Selecciona el equipo</option><option *ngFor="let e of equipos" [value]="e">{{e}}</option></select></div>
+<div class="field-row"><div class="field"><label for="pass">Contraseña (mín. 8 caracteres)</label><input id="pass" name="pass" class="line-input" [type]="verClave ? 'text' : 'password'" minlength="8" required [(ngModel)]="datos.password"></div>
+<div class="field"><label for="pass2">Repetir contraseña</label><input id="pass2" name="pass2" class="line-input" [type]="verClave ? 'text' : 'password'" required [(ngModel)]="password2"></div></div>
+<label class="check-row"><input type="checkbox" name="verClave" [(ngModel)]="verClave"> Mostrar contraseña</label>
+<p *ngIf="mensaje" class="mensaje-api" [class.error]="error">{{mensaje}}</p>
+<button type="submit" class="btn btn-primary btn-block" [disabled]="procesando || objetivos.length===0">{{procesando?'Registrando...':'Registrar'}}</button>
+<a class="enlace-auxiliar" href="/login">Ya tengo cuenta</a>
+</form><div class="qr"><img src="/fotos/logo.jpeg" alt="Logo TrueForm"></div></div></main><footer class="footer">© 2026 TrueForm — Tu entrenador inteligente.</footer>

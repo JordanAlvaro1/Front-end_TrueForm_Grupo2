@@ -1,0 +1,55 @@
+### ABRIR con IntelliJ o WebStorm HTTP Client. Requiere Spring Boot activo en :8080.
+### PRECAUCIÓN: NO ejecutar los POST muchas veces si no quieres registros duplicados.
+
+### Objetivos (GET) — sin token ni Authorization
+GET http://127.0.0.1:8080/api/objetivos
+
+### Ejercicios (GET)
+GET http://127.0.0.1:8080/api/ejercicios
+
+### Crear objetivo de ejemplo (POST)
+POST http://127.0.0.1:8080/api/objetivos
+Content-Type: application/json
+
+{
+  "nombreObjetivo": "Ganar masa muscular",
+  "descripcion": "Objetivo de práctica para el trabajo final"
+}
+
+### Crear ejercicio de ejemplo (POST)
+POST http://127.0.0.1:8080/api/ejercicios
+Content-Type: application/json
+
+{
+  "nombreEjercicio": "Remo con mancuerna",
+  "grupoMuscular": "Espalda",
+  "descripcion": "Ejercicio de demostración",
+  "tipo": "Fuerza",
+  "equipoNecesario": "Mancuerna"
+}
+
+### Registrar usuario de PRUEBA — sustituir idObjetivo por el que devuelve el GET anterior
+POST http://127.0.0.1:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "nombres": "Usuario",
+  "apellidos": "Prueba",
+  "email": "prueba-trueform@example.com",
+  "password": "Prueba12345",
+  "edad": 22,
+  "peso": 70,
+  "altura": 1.75,
+  "nivel": "principiante",
+  "idObjetivo": 1,
+  "equipo": "Mancuernas"
+}
+
+### Validación del login demo — solo funciona si registraste el usuario anterior
+POST http://127.0.0.1:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "prueba-trueform@example.com",
+  "password": "Prueba12345"
+}
