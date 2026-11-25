@@ -1,0 +1,456 @@
+<div class="admin-layout">
+  <aside class="admin-sidebar" aria-label="Navegación administrativa">
+    <a routerLink="/" class="admin-brand">
+      <span class="brand-logo"><img src="fotos/logo.jpeg" alt=""></span>
+      <span>TRUE<span class="accent">FORM</span><small>ADMINISTRACIÓN</small></span>
+    </a>
+    <div class="admin-identity">
+      <div class="admin-avatar">{{ nombre.charAt(0).toUpperCase() }}</div>
+      <div><strong>{{ nombre }}</strong><span>Administrador</span></div>
+      <span class="active-dot" aria-hidden="true"></span>
+    </div>
+    <nav class="admin-navigation" aria-label="Secciones del panel">
+      <p class="sidebar-label">PANEL DE CONTROL</p>
+      <button type="button" [class.active]="seccion() === 'resumen'" (click)="seleccionar('resumen')">
+        <span class="nav-icon">▦</span> Resumen
+      </button>
+      <button type="button" [class.active]="seccion() === 'ejercicios'" (click)="seleccionar('ejercicios')">
+        <span class="nav-icon">▤</span> Ejercicios
+      </button>
+      <button type="button" [class.active]="seccion() === 'glosario'" (click)="seleccionar('glosario')">
+        <span class="nav-icon">▧</span> Glosario
+      </button>
+      <button type="button" [class.active]="seccion() === 'consejos'" (click)="seleccionar('consejos')">
+        <span class="nav-icon">✦</span> Consejos
+      </button>
+      <button type="button" [class.active]="seccion() === 'videos'" (click)="seleccionar('videos')">
+        <span class="nav-icon">▶</span> Videos
+      </button>
+      <button type="button" [class.active]="seccion() === 'usuarios'" (click)="seleccionar('usuarios')">
+        <span class="nav-icon">♙</span> Usuarios
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <a routerLink="/">Volver al inicio</a>
+      <button type="button" (click)="salir()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="admin-content">
+    <header class="admin-topbar">
+      <div><span>TrueForm / </span><strong>Administración</strong></div>
+      <div class="topbar-actions">
+        <span class="admin-tag">● Acceso ADMIN</span>
+        <button type="button" class="outline-button" (click)="actualizarDatos()" [disabled]="cargandoUsuarios() || cargandoEjercicios() || cargandoGlosario() || cargandoConsejos() || cargandoVideos()">↻ Actualizar datos</button>
+      </div>
+    </header>
+    <div class="content-inner">
+      @if (aviso()) { <div class="message success" role="status">✓ {{ aviso() }} <button type="button" (click)="aviso.set('')" aria-label="Cerrar mensaje">×</button></div> }
+      @if (seccion() === 'resumen') {
+        <div class="page-heading"><div><span class="eyebrow">CENTRO DE OPERACIONES</span><h1>Panel administrativo</h1><p>Gestiona ejercicios, glosario, consejos y videos educativos, y consulta los usuarios registrados en TrueForm.</p></div></div>
+        <div class="hero-admin">
+          <div><span class="hero-kicker">TRUEFORM · CONTROL DE PLATAFORMA</span><h2>Bienvenido al área administrativa</h2><p>Los indicadores que ves aquí se obtienen directamente de la API. Las operaciones de edición están restringidas por Spring Security.</p></div>
+          <span class="hero-icon" aria-hidden="true">◆</span>
+        </div>
+        <div class="stats-grid six-cols">
+          <div class="stat-card"><span>Usuarios registrados</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuarios().length }}</strong><small>Consultados desde /api/usuarios</small></div>
+          <div class="stat-card"><span>Ejercicios en catálogo</span><strong>{{ cargandoEjercicios() || errorEjercicios() ? '—' : ejercicios().length }}</strong><small>Consultados desde /api/ejercicios</small></div>
+          <div class="stat-card"><span>Usuarios intermedios</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuariosPorNivel().intermedio }}</strong><small>Según los registros actuales</small></div>
+          <div class="stat-card"><span>Términos activos</span><strong>{{ cargandoGlosario() || errorGlosario() ? '—' : terminosActivos() }}</strong><small>Glosario de PostgreSQL</small></div>
+          <div class="stat-card"><span>Consejos activos</span><strong>{{ cargandoConsejos() || errorConsejos() ? '—' : consejosActivos() }}</strong><small>Tips dinámicos en PostgreSQL</small></div>
+          <div class="stat-card"><span>Videos publicados</span><strong>{{ cargandoVideos() || errorVideos() ? '—' : videosActivos() }}</strong><small>Biblioteca educativa</small></div>
+        </div>
+        @if (errorUsuarios()) { <div class="message error" role="alert">Usuarios: {{ errorUsuarios() }}</div> }
+        @if (errorEjercicios()) { <div class="message error" role="alert">Ejercicios: {{ errorEjercicios() }}</div> }
+        @if (errorGlosario()) { <div class="message error" role="alert">Glosario: {{ errorGlosario() }}</div> }
+        @if (errorConsejos()) { <div class="message error" role="alert">Consejos: {{ errorConsejos() }}</div> }
+        @if (errorVideos()) { <div class="message error" role="alert">Videos: {{ errorVideos() }}</div> }
+        <div class="quick-grid five-cols">
+          <section class="quick-card"><div class="quick-icon">▤</div><h3>Catálogo de ejercicios</h3><p>Añade, edita y retira ejercicios del catálogo central que utilizan los deportistas.</p><button type="button" class="primary-button" (click)="seleccionar('ejercicios')">Gestionar ejercicios →</button></section>
+          <section class="quick-card"><div class="quick-icon">▧</div><h3>Glosario deportivo</h3><p>Publica y actualiza términos para los deportistas, o desactívalos sin borrarlos.</p><button type="button" class="primary-button" (click)="seleccionar('glosario')">Gestionar glosario →</button></section>
+          <section class="quick-card"><div class="quick-icon">✦</div><h3>Consejos del día</h3><p>Publica, ordena y desactiva recomendaciones para los tres niveles de entrenamiento.</p><button type="button" class="primary-button" (click)="seleccionar('consejos')">Gestionar consejos →</button></section>
+          <section class="quick-card"><div class="quick-icon">▶</div><h3>Biblioteca de videos</h3><p>Publica enlaces de YouTube o Vimeo por nivel y gestiona su disponibilidad.</p><button type="button" class="primary-button" (click)="seleccionar('videos')">Gestionar videos →</button></section>
+          <section class="quick-card"><div class="quick-icon">♙</div><h3>Usuarios registrados</h3><p>Consulta los datos generales y los niveles de entrenamiento de las cuentas registradas.</p><button type="button" class="secondary-button" (click)="seleccionar('usuarios')">Ver usuarios →</button></section>
+        </div>
+
+      }
+
+      @if (seccion() === 'ejercicios') {
+        <div class="page-heading page-heading-actions">
+          <div><span class="eyebrow">CONTENIDO DE LA PLATAFORMA</span><h1>Gestión de ejercicios</h1><p>Registra, edita o retira ejercicios del catálogo utilizado en TrueForm.</p></div>
+          <button type="button" class="primary-button" (click)="agregarEjercicio()">+ Nuevo ejercicio</button>
+        </div>
+        @if (errorEjercicios()) { <div class="message error" role="alert">{{ errorEjercicios() }}</div> }
+
+        @if (mostrarFormulario()) {
+          <section class="panel form-panel" aria-label="Formulario de ejercicio">
+            <div class="panel-title"><h2>{{ formulario.idEjercicio === null ? 'Registrar ejercicio' : 'Editar ejercicio #' + formulario.idEjercicio }}</h2><button type="button" class="text-button" (click)="cancelarEdicion()">Cancelar</button></div>
+            @if (errorFormulario()) { <div class="message error" role="alert">{{ errorFormulario() }}</div> }
+            <form (ngSubmit)="guardarEjercicio()" class="exercise-form">
+              <label>Nombre del ejercicio *<input name="nombreEjercicio" [(ngModel)]="formulario.nombreEjercicio" maxlength="150" required placeholder="Ej. Sentadilla frontal"></label>
+              <label>Grupo muscular *<input name="grupoMuscular" [(ngModel)]="formulario.grupoMuscular" maxlength="100" required placeholder="Ej. Piernas"></label>
+              <label>Tipo<input name="tipo" [(ngModel)]="formulario.tipo" maxlength="50" placeholder="Ej. Fuerza"></label>
+              <label>Equipo necesario<input name="equipoNecesario" [(ngModel)]="formulario.equipoNecesario" maxlength="150" placeholder="Ej. Barra y discos"></label>
+              <label class="full-span">Descripción<textarea name="descripcion" [(ngModel)]="formulario.descripcion" rows="3" placeholder="Explica brevemente la ejecución del ejercicio"></textarea></label>
+              <div class="form-actions"><button type="button" class="secondary-button" (click)="cancelarEdicion()">Cancelar</button><button type="submit" class="primary-button" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : (formulario.idEjercicio === null ? 'Crear ejercicio' : 'Guardar cambios') }}</button></div>
+            </form>
+          </section>
+        }
+        <section class="panel">
+          <div class="panel-title responsive-title"><h2>Ejercicios registrados <span class="small-count">{{ ejerciciosVisibles().length }}</span></h2><input class="search-input" type="search" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" placeholder="Buscar nombre, grupo o equipo" aria-label="Buscar ejercicios"></div>
+          @if (cargandoEjercicios()) { <p class="empty-message">Consultando los ejercicios de la API…</p> }
+          @else if (ejerciciosVisibles().length === 0) { <p class="empty-message">No hay ejercicios que coincidan con la búsqueda.</p> }
+          @else {
+            <div class="table-scroll"><table><thead><tr><th>ID</th><th>Ejercicio</th><th>Grupo muscular</th><th>Equipo</th><th>Acciones</th></tr></thead><tbody>
+              @for (ej of ejerciciosVisibles(); track ej.idEjercicio) {
+                <tr><td class="muted-cell">#{{ ej.idEjercicio }}</td><td><strong>{{ ej.nombreEjercicio }}</strong><small>{{ ej.tipo || 'Sin tipo registrado' }}</small></td><td>{{ ej.grupoMuscular }}</td><td>{{ ej.equipoNecesario || '—' }}</td><td><div class="table-actions"><button type="button" class="small-button" (click)="editarEjercicio(ej)">Editar</button><button type="button" class="small-button danger" [disabled]="eliminando() !== null" (click)="eliminarEjercicio(ej)">{{ eliminando() === ej.idEjercicio ? 'Eliminando…' : 'Eliminar' }}</button></div></td></tr>
+              }
+            </tbody></table></div>
+          }
+        </section>
+      }
+
+      @if (seccion() === 'glosario') {
+        <div class="page-heading page-heading-actions">
+          <div>
+            <span class="eyebrow">CONTENIDO EDUCATIVO</span>
+            <h1>Gestión del glosario</h1>
+            <p>Registra definiciones, corrige términos y controla cuáles pueden consultar los deportistas.</p>
+          </div>
+          <button type="button" class="primary-button" (click)="agregarTermino()">+ Nuevo término</button>
+        </div>
+
+        @if (errorGlosario()) {
+          <div class="message error" role="alert">{{ errorGlosario() }}</div>
+        }
+
+        @if (mostrarFormularioGlosario()) {
+          <section class="panel form-panel" aria-label="Formulario de término">
+            <div class="panel-title">
+              <h2>{{ formularioGlosario.idTermino === null ? 'Registrar término' : 'Editar término #' + formularioGlosario.idTermino }}</h2>
+              <button type="button" class="text-button" (click)="cancelarEdicionTermino()">Cancelar</button>
+            </div>
+            @if (errorFormularioGlosario()) {
+              <div class="message error" role="alert">{{ errorFormularioGlosario() }}</div>
+            }
+            <form class="exercise-form" (ngSubmit)="guardarTermino()">
+              <label>
+                Término *
+                <input name="glosarioTermino" [(ngModel)]="formularioGlosario.termino"
+                       maxlength="120" required placeholder="Ej. Sobrecarga progresiva">
+              </label>
+              <label>
+                Categoría *
+                <input name="glosarioCategoria" [(ngModel)]="formularioGlosario.categoria"
+                       maxlength="80" required placeholder="Ej. Entrenamiento de fuerza">
+              </label>
+              <label class="full-span">
+                Definición *
+                <textarea name="glosarioDefinicion" [(ngModel)]="formularioGlosario.definicion"
+                          maxlength="4000" rows="4" required
+                          placeholder="Redacta una definición clara para los deportistas"></textarea>
+              </label>
+              <div class="form-actions">
+                <button type="button" class="secondary-button" (click)="cancelarEdicionTermino()">Cancelar</button>
+                <button type="submit" class="primary-button" [disabled]="guardandoGlosario()">
+                  {{ guardandoGlosario() ? 'Guardando…' : (formularioGlosario.idTermino === null ? 'Crear término' : 'Guardar cambios') }}
+                </button>
+              </div>
+            </form>
+          </section>
+        }
+
+        <section class="panel">
+          <div class="panel-title responsive-title">
+            <div>
+              <h2>Términos registrados <span class="small-count">{{ terminosVisibles().length }}</span></h2>
+              <p class="glosario-subtitulo">{{ terminosActivos() }} activos de {{ terminos().length }} en total</p>
+            </div>
+            <input class="search-input" type="search" [ngModel]="busquedaGlosario()"
+                   (ngModelChange)="busquedaGlosario.set($event)" placeholder="Buscar término, categoría o definición"
+                   aria-label="Buscar términos del glosario">
+          </div>
+
+          @if (cargandoGlosario()) {
+            <p class="empty-message">Consultando los términos de PostgreSQL…</p>
+          } @else if (terminosVisibles().length === 0) {
+            <p class="empty-message">No hay términos que coincidan con la búsqueda.</p>
+          } @else {
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>ID</th><th>Término y definición</th><th>Categoría</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  @for (t of terminosVisibles(); track t.idTermino) {
+                    <tr>
+                      <td class="muted-cell">#{{ t.idTermino }}</td>
+                      <td class="glosario-definicion"><strong>{{ t.termino }}</strong><small>{{ t.definicion }}</small></td>
+                      <td>{{ t.categoria }}</td>
+                      <td>
+                        <span class="glosario-status" [class.activo]="t.activo" [class.inactivo]="!t.activo">
+                          {{ t.activo ? 'Publicado' : 'Desactivado' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="table-actions">
+                          <button type="button" class="small-button" [disabled]="guardandoGlosario() || cambiandoEstadoTermino() !== null"
+                                  (click)="editarTermino(t)">Editar</button>
+                          <button type="button" class="small-button" [class.danger]="t.activo"
+                                  [disabled]="guardandoGlosario() || cambiandoEstadoTermino() !== null"
+                                  (click)="cambiarEstadoTermino(t)">
+                            {{ cambiandoEstadoTermino() === t.idTermino ? 'Procesando…' : (t.activo ? 'Desactivar' : 'Reactivar') }}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      }
+
+      @if (seccion() === 'consejos') {
+        <div class="page-heading page-heading-actions">
+          <div>
+            <span class="eyebrow">CONTENIDO EDUCATIVO</span>
+            <h1>Gestión de consejos</h1>
+            <p>Crea, edita y publica consejos que alimentan «Tips del día» en los dashboards de TrueForm.</p>
+          </div>
+          <button type="button" class="primary-button" (click)="agregarConsejo()">+ Nuevo consejo</button>
+        </div>
+
+        @if (errorConsejos()) {
+          <div class="message error" role="alert">{{ errorConsejos() }}</div>
+        }
+
+        @if (mostrarFormularioConsejo()) {
+          <section class="panel form-panel" aria-label="Formulario de consejo">
+            <div class="panel-title">
+              <h2>{{ formularioConsejo.idTip === null ? 'Registrar consejo' : 'Editar consejo #' + formularioConsejo.idTip }}</h2>
+              <button type="button" class="text-button" (click)="cancelarEdicionConsejo()">Cancelar</button>
+            </div>
+            @if (errorFormularioConsejo()) {
+              <div class="message error" role="alert">{{ errorFormularioConsejo() }}</div>
+            }
+            <form class="exercise-form" (ngSubmit)="guardarConsejo()">
+              <label>
+                Título *
+                <input name="tipTitulo" [(ngModel)]="formularioConsejo.titulo" required
+                       maxlength="160" placeholder="Ej. Controla el ritmo de tus repeticiones">
+              </label>
+              <label>
+                Categoría *
+                <input name="tipCategoria" [(ngModel)]="formularioConsejo.categoria" required
+                       maxlength="80" placeholder="Ej. Técnica">
+              </label>
+              <label>
+                Orden de visualización *
+                <input name="tipOrden" [(ngModel)]="formularioConsejo.ordenVisualizacion" required
+                       type="number" min="1" step="1" placeholder="Ej. 13">
+              </label>
+              <label class="full-span">
+                Contenido *
+                <textarea name="tipContenido" [(ngModel)]="formularioConsejo.contenido" required
+                          maxlength="4000" rows="5" placeholder="Explica el consejo para los deportistas"></textarea>
+              </label>
+              <p class="consejos-ayuda full-span">Los consejos activos se incluyen en la rotación de «Tips del día». Su aparición depende del día y del orden; uno nuevo puede no mostrarse inmediatamente.</p>
+              <div class="form-actions">
+                <button type="button" class="secondary-button" (click)="cancelarEdicionConsejo()">Cancelar</button>
+                <button type="submit" class="primary-button" [disabled]="guardandoConsejo()">
+                  {{ guardandoConsejo() ? 'Guardando…' : (formularioConsejo.idTip === null ? 'Crear consejo' : 'Guardar cambios') }}
+                </button>
+              </div>
+            </form>
+          </section>
+        }
+
+        <section class="panel">
+          <div class="panel-title responsive-title">
+            <div>
+              <h2>Consejos registrados <span class="small-count">{{ consejosVisibles().length }}</span></h2>
+              <p class="consejos-subtitulo">{{ consejosActivos() }} activos de {{ consejos().length }} en total</p>
+            </div>
+            <input class="search-input" type="search" [ngModel]="busquedaConsejos()"
+                   (ngModelChange)="busquedaConsejos.set($event)"
+                   placeholder="Buscar título, categoría, contenido u orden" aria-label="Buscar consejos">
+          </div>
+
+          @if (cargandoConsejos()) {
+            <p class="empty-message">Consultando los consejos de PostgreSQL…</p>
+          } @else if (consejosVisibles().length === 0) {
+            <p class="empty-message">No hay consejos que coincidan con tu búsqueda.</p>
+          } @else {
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>ID</th><th>Consejo y contenido</th><th>Categoría</th><th>Orden</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  @for (tip of consejosVisibles(); track tip.idTip) {
+                    <tr>
+                      <td class="muted-cell">#{{ tip.idTip }}</td>
+                      <td class="consejo-descripcion"><strong>{{ tip.titulo }}</strong><small>{{ tip.contenido }}</small></td>
+                      <td>{{ tip.categoria }}</td>
+                      <td><span class="consejo-orden">{{ tip.ordenVisualizacion }}</span></td>
+                      <td>
+                        <span class="glosario-status" [class.activo]="tip.activo" [class.inactivo]="!tip.activo">
+                          {{ tip.activo ? 'Publicado' : 'Desactivado' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="table-actions">
+                          <button type="button" class="small-button"
+                                  [disabled]="guardandoConsejo() || cambiandoEstadoConsejo() !== null"
+                                  (click)="editarConsejo(tip)">Editar</button>
+                          <button type="button" class="small-button" [class.danger]="tip.activo"
+                                  [disabled]="guardandoConsejo() || cambiandoEstadoConsejo() !== null"
+                                  (click)="cambiarEstadoConsejo(tip)">
+                            {{ cambiandoEstadoConsejo() === tip.idTip ? 'Procesando…' : (tip.activo ? 'Desactivar' : 'Reactivar') }}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      }
+
+      @if (seccion() === 'videos') {
+        <div class="page-heading page-heading-actions">
+          <div>
+            <span class="eyebrow">CONTENIDO AUDIOVISUAL</span>
+            <h1>Biblioteca de videos</h1>
+            <p>Administra enlaces educativos de YouTube y Vimeo, con contenido general o específico por nivel.</p>
+          </div>
+          <button type="button" class="primary-button" (click)="agregarVideo()">+ Nuevo video</button>
+        </div>
+
+        @if (errorVideos()) {
+          <div class="message error" role="alert">{{ errorVideos() }}</div>
+        }
+
+        @if (mostrarFormularioVideo()) {
+          <section class="panel form-panel" aria-label="Formulario de video educativo">
+            <div class="panel-title">
+              <h2>{{ formularioVideo.idVideo === null ? 'Registrar video' : 'Editar video #' + formularioVideo.idVideo }}</h2>
+              <button type="button" class="text-button" (click)="cancelarEdicionVideo()">Cancelar</button>
+            </div>
+            @if (errorFormularioVideo()) {
+              <div class="message error" role="alert">{{ errorFormularioVideo() }}</div>
+            }
+            <form class="exercise-form" (ngSubmit)="guardarVideo()">
+              <label>
+                Título *
+                <input name="videoTitulo" [(ngModel)]="formularioVideo.titulo" required maxlength="160"
+                       placeholder="Ej. Técnica correcta de sentadilla">
+              </label>
+              <label>
+                Categoría *
+                <input name="videoCategoria" [(ngModel)]="formularioVideo.categoria" required maxlength="80"
+                       placeholder="Ej. Piernas, Movilidad, Nutrición">
+              </label>
+              <label>
+                Nivel recomendado *
+                <select name="videoNivel" [(ngModel)]="formularioVideo.nivel" required>
+                  <option value="GENERAL">General (todos)</option>
+                  <option value="PRINCIPIANTE">Principiante</option>
+                  <option value="INTERMEDIO">Intermedio</option>
+                  <option value="AVANZADO">Avanzado</option>
+                </select>
+              </label>
+              <label>
+                URL del video *
+                <input name="videoUrl" [(ngModel)]="formularioVideo.urlVideo" required
+                       type="url" maxlength="1000" placeholder="https://www.youtube.com/watch?v=...">
+              </label>
+              <label class="full-span">
+                Descripción *
+                <textarea name="videoDescripcion" [(ngModel)]="formularioVideo.descripcion" required
+                          maxlength="4000" rows="4" placeholder="Qué aprenderá el deportista con este video"></textarea>
+              </label>
+              <p class="videos-ayuda full-span">Únicamente enlaces HTTPS de YouTube y Vimeo. El archivo de video no se almacena en TrueForm. Los videos desactivados no aparecerán en la consulta deportiva.</p>
+              <div class="form-actions">
+                <button type="button" class="secondary-button" (click)="cancelarEdicionVideo()">Cancelar</button>
+                <button type="submit" class="primary-button" [disabled]="guardandoVideo()">
+                  {{ guardandoVideo() ? 'Guardando…' : (formularioVideo.idVideo === null ? 'Crear video' : 'Guardar cambios') }}
+                </button>
+              </div>
+            </form>
+          </section>
+        }
+
+        <section class="panel">
+          <div class="panel-title responsive-title">
+            <div>
+              <h2>Videos registrados <span class="small-count">{{ videosVisibles().length }}</span></h2>
+              <p class="videos-subtitulo">{{ videosActivos() }} publicados de {{ videos().length }} en total</p>
+            </div>
+            <input class="search-input" type="search" [ngModel]="busquedaVideos()"
+                   (ngModelChange)="busquedaVideos.set($event)"
+                   placeholder="Buscar título, categoría, nivel o URL" aria-label="Buscar videos educativos">
+          </div>
+
+          @if (cargandoVideos()) {
+            <p class="empty-message">Consultando la biblioteca de PostgreSQL…</p>
+          } @else if (videosVisibles().length === 0) {
+            <p class="empty-message">No hay videos que coincidan con la búsqueda.</p>
+          } @else {
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>ID</th><th>Video</th><th>Categoría</th><th>Nivel</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  @for (video of videosVisibles(); track video.idVideo) {
+                    <tr>
+                      <td class="muted-cell">#{{ video.idVideo }}</td>
+                      <td class="video-descripcion">
+                        <strong>{{ video.titulo }}</strong>
+                        <small>{{ video.descripcion }}</small>
+                        <a class="video-url" [href]="video.urlVideo" target="_blank" rel="noopener noreferrer">Abrir video en otra pestaña ↗</a>
+                      </td>
+                      <td>{{ video.categoria }}</td>
+                      <td><span class="level-badge">{{ video.nivel }}</span></td>
+                      <td><span class="glosario-status" [class.activo]="video.activo" [class.inactivo]="!video.activo">
+                        {{ video.activo ? 'Publicado' : 'Desactivado' }}
+                      </span></td>
+                      <td>
+                        <div class="table-actions">
+                          <button type="button" class="small-button"
+                                  [disabled]="guardandoVideo() || cambiandoEstadoVideo() !== null"
+                                  (click)="editarVideo(video)">Editar</button>
+                          <button type="button" class="small-button" [class.danger]="video.activo"
+                                  [disabled]="guardandoVideo() || cambiandoEstadoVideo() !== null"
+                                  (click)="cambiarEstadoVideo(video)">
+                            {{ cambiandoEstadoVideo() === video.idVideo ? 'Procesando…' : (video.activo ? 'Desactivar' : 'Reactivar') }}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      }
+
+      @if (seccion() === 'usuarios') {
+        <div class="page-heading"><div><span class="eyebrow">CUENTAS REGISTRADAS</span><h1>Usuarios de TrueForm</h1><p>Consulta general de cuentas. Aquí no se modifican contraseñas, roles ni registros personales.</p></div></div>
+        @if (errorUsuarios()) { <div class="message error" role="alert">{{ errorUsuarios() }}</div> }
+        <div class="stats-grid compact">
+          <div class="stat-card"><span>Principiantes</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuariosPorNivel().principiante }}</strong></div>
+          <div class="stat-card"><span>Intermedios</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuariosPorNivel().intermedio }}</strong></div>
+          <div class="stat-card"><span>Avanzados</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuariosPorNivel().avanzado }}</strong></div>
+        </div>
+        <section class="panel"><div class="panel-title"><h2>Listado de usuarios</h2></div>
+          @if (cargandoUsuarios()) { <p class="empty-message">Consultando usuarios de la API…</p> }
+          @else if (usuarios().length === 0) { <p class="empty-message">No hay usuarios registrados para mostrar.</p> }
+          @else { <div class="table-scroll"><table><thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Nivel</th></tr></thead><tbody>
+            @for (u of usuarios(); track u.idUsuario) { <tr><td class="muted-cell">#{{ u.idUsuario }}</td><td><strong>{{ u.nombres }} {{ u.apellidos }}</strong></td><td>{{ u.email }}</td><td><span class="level-badge">{{ u.nivel }}</span></td></tr> }
+          </tbody></table></div> }
+        </section>
+      }
+    </div>
+  </main>
+</div>

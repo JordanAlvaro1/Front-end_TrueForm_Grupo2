@@ -8,12 +8,12 @@
         <button class="tf-menu-item" type="button" [class.active]="vista===item.vista" (click)="cambiarVista(item.vista)"><span class="tf-nav-icon">{{item.icono}}</span><span>{{item.nombre}}</span><span class="tf-menu-arrow" *ngIf="vista===item.vista">›</span></button>
       </ng-container>
     </nav>
-    <div class="tf-sidebar-foot"><a routerLink="/panel" class="tf-side-link">↗ Panel de registros</a><a routerLink="/" class="tf-side-link">↗ Volver al inicio</a><button class="tf-side-link" type="button" (click)="salir()">Salir de la demostración</button></div>
+    <div class="tf-sidebar-foot"><a routerLink="/panel" class="tf-side-link">↗ Panel de registros</a><a routerLink="/" class="tf-side-link">↗ Volver al inicio</a><button class="tf-side-link" type="button" (click)="salir()">Cerrar sesión</button></div>
   </aside>
   <div class="tf-shell">
     <header class="tf-topbar"><div class="tf-top-left"><button type="button" class="tf-mobile-toggle" (click)="menuMovil=!menuMovil" aria-label="Abrir o cerrar menú">☰</button><span>Mi espacio / <strong>{{vista==='inicio'?'Resumen':vista==='rutinas'?'Entrenamiento':vista==='progreso'?'Seguimiento':vista | titlecase}}</strong></span></div><div class="tf-top-actions"><span class="tf-local-pill">● DEMO LOCAL</span><button type="button" class="tf-button-ghost" (click)="recargarBase()" [disabled]="cargando['rutinas']">↻ Actualizar datos</button></div></header>
     <main class="tf-main" [class.tf-main-intermedio]="nivel==='intermedio'" [class.tf-main-avanzado]="nivel==='avanzado'">
-      <div class="tf-alert tf-alert-warn"><span>ⓘ</span> Versión académica sin Security. Este panel utiliza datos reales de la API, pero no protege los endpoints: solo debe ejecutarse en localhost con información de prueba.</div>
+      <div class="tf-alert tf-alert-warn"><span>ⓘ</span> Integración JWT en curso: el inicio de sesión ya utiliza tokens, pero algunos endpoints de la API siguen abiertos temporalmente. Utilizar solo en localhost con datos de prueba.</div>
       <div class="tf-alert tf-alert-ok" *ngIf="aviso" role="status">✓ {{aviso}} <button type="button" (click)="aviso=''" aria-label="Cerrar aviso">×</button></div>
       <ng-container *ngFor="let key of ['usuario','rutinas','progresos','registros']"><div class="tf-alert tf-alert-error" *ngIf="errores[key]">{{key}}: {{errores[key]}}</div></ng-container>
 
@@ -213,7 +213,50 @@
       <section *ngIf="vista==='chat'"><div class="tf-page-heading"><div><span class="tf-kicker">ASISTENTE</span><h1>Chat de entrenamiento con IA</h1><p>Envía tu consulta al endpoint existente de Spring Boot.</p></div></div><div class="tf-card tf-narrow"><div class="tf-chat-message bot"><span class="tf-chat-avatar">◈</span><div><strong>Asistente TrueForm</strong><p>Hola, {{nombre}}. Puedes preguntarme sobre ejercicios y entrenamiento. La respuesta depende de la disponibilidad del proveedor IA configurado en la API.</p></div></div><div class="tf-chat-message user" *ngIf="respuestaIA"><span class="tf-chat-avatar">T</span><div><strong>Tú</strong><p>{{respuestaIA.pregunta}}</p></div></div><div class="tf-chat-message bot" *ngIf="respuestaIA"><span class="tf-chat-avatar">◈</span><div><strong>Asistente</strong><p>{{respuestaIA.respuesta||respuestaIA.mensaje||'La IA no pudo generar una respuesta.'}}</p></div></div><label class="tf-field-label" for="tf-pregunta">Escribe tu pregunta</label><textarea id="tf-pregunta" rows="4" [(ngModel)]="preguntaIA" maxlength="1000" placeholder="¿Cómo puedo organizar una rutina para espalda?..."></textarea><button type="button" class="tf-btn tf-btn-primary" (click)="preguntar()" [disabled]="!preguntaIA.trim() || cargando['chat']">{{cargando['chat']?'Consultando IA...':'Enviar pregunta ↗'}}</button><p *ngIf="errores['chat']" class="tf-error">{{errores['chat']}} La configuración de Gemini u otro proveedor debe resolverse en Spring Boot.</p></div></section>
 
       <!-- TECNICA -->
-      <section *ngIf="vista==='tecnica'"><div class="tf-page-heading"><div><span class="tf-kicker">RECURSOS EDUCATIVOS</span><h1>Técnica y videos</h1><p>Un espacio de apoyo visual, inspirado en las pantallas originales de IHC.</p></div></div><div class="tf-recs"><article class="tf-card tf-video-card"><div class="tf-video-icon">▷</div><h2>Técnica de sentadilla</h2><p>Consulta material educativo y compáralo con las indicaciones de tu entrenador.</p><a class="tf-btn tf-btn-secondary" href="https://www.youtube.com/results?search_query=tecnica+sentadilla+educacion" target="_blank" rel="noopener noreferrer">Buscar video educativo ↗</a></article><article class="tf-card tf-video-card"><div class="tf-video-icon">▷</div><h2>Técnica de remo</h2><p>Aprende los conceptos generales de postura y recorrido.</p><a class="tf-btn tf-btn-secondary" href="https://www.youtube.com/results?search_query=tecnica+remo+mancuerna" target="_blank" rel="noopener noreferrer">Buscar video educativo ↗</a></article><article class="tf-card tf-video-card"><div class="tf-video-icon">▷</div><h2>Movilidad y calentamiento</h2><p>Explora ejemplos de preparación previa al entrenamiento.</p><a class="tf-btn tf-btn-secondary" href="https://www.youtube.com/results?search_query=calentamiento+movilidad+entrenamiento" target="_blank" rel="noopener noreferrer">Buscar video educativo ↗</a></article></div><p class="tf-note">La API actual no contiene un endpoint de análisis de postura por cámara ni un repositorio de videos. Esta sección enlaza recursos externos, y no realiza corrección técnica automática.</p></section>
+      <section *ngIf="vista==='tecnica'" class="tf-video-library">
+        <div class="tf-page-heading">
+          <div>
+            <span class="tf-kicker">RECURSOS EDUCATIVOS</span>
+            <h1>Técnica y videos</h1>
+            <p>Videos publicados por TrueForm para tu nivel {{nivelEtiqueta}} y para todos los niveles.</p>
+          </div>
+          <button class="tf-btn tf-btn-outline" type="button" (click)="cargarVideos()" [disabled]="cargando['videos']">
+            {{cargando['videos'] ? 'Actualizando...' : 'Actualizar videos'}}
+          </button>
+        </div>
+
+        <p class="tf-subtle" *ngIf="cargando['videos']">Cargando biblioteca educativa desde la API...</p>
+        <p class="tf-error" *ngIf="errores['videos']">{{errores['videos']}}</p>
+        <div *ngIf="!cargando['videos'] && !errores['videos'] && !videosPublicados.length" class="tf-card tf-video-empty">
+          Todavía no hay videos publicados para tu nivel. Puedes consultar las búsquedas educativas sugeridas más abajo.
+        </div>
+        <div class="tf-recs" *ngIf="videosPublicados.length">
+          <article class="tf-card tf-video-card tf-video-published" *ngFor="let video of videosPublicados">
+            <div class="tf-video-icon" aria-hidden="true">▷</div>
+            <div class="tf-video-metadata">
+              <span class="tf-chip">{{video.categoria}}</span>
+              <span class="tf-chip">{{video.nivel === 'GENERAL' ? 'Todos los niveles' : video.nivel | titlecase}}</span>
+            </div>
+            <h2>{{video.titulo}}</h2>
+            <p>{{video.descripcion}}</p>
+            <a class="tf-btn tf-btn-secondary" [href]="video.urlVideo" target="_blank" rel="noopener noreferrer">
+              Ver video educativo ↗
+            </a>
+          </article>
+        </div>
+
+        <div class="tf-video-extra">
+          <span class="tf-kicker">MATERIAL COMPLEMENTARIO</span>
+          <h2>Búsquedas educativas sugeridas</h2>
+          <p class="tf-subtle">Enlaces de búsqueda externos que ya estaban disponibles en TrueForm.</p>
+        </div>
+        <div class="tf-recs">
+          <article class="tf-card tf-video-card"><div class="tf-video-icon">▷</div><h2>Técnica de sentadilla</h2><p>Consulta material educativo y compáralo con las indicaciones de tu entrenador.</p><a class="tf-btn tf-btn-secondary" href="https://www.youtube.com/results?search_query=tecnica+sentadilla+educacion" target="_blank" rel="noopener noreferrer">Buscar video educativo ↗</a></article>
+          <article class="tf-card tf-video-card"><div class="tf-video-icon">▷</div><h2>Técnica de remo</h2><p>Aprende los conceptos generales de postura y recorrido.</p><a class="tf-btn tf-btn-secondary" href="https://www.youtube.com/results?search_query=tecnica+remo+mancuerna" target="_blank" rel="noopener noreferrer">Buscar video educativo ↗</a></article>
+          <article class="tf-card tf-video-card"><div class="tf-video-icon">▷</div><h2>Movilidad y calentamiento</h2><p>Explora ejemplos de preparación previa al entrenamiento.</p><a class="tf-btn tf-btn-secondary" href="https://www.youtube.com/results?search_query=calentamiento+movilidad+entrenamiento" target="_blank" rel="noopener noreferrer">Buscar video educativo ↗</a></article>
+        </div>
+        <p class="tf-note">Los videos publicados son enlaces externos registrados por administradores. Esta sección no realiza análisis de postura por cámara ni correcciones técnicas automáticas.</p>
+      </section>
 
       <!-- PERFIL -->
       <section *ngIf="vista==='perfil'"><div class="tf-page-heading"><div><span class="tf-kicker">CONFIGURACIÓN</span><h1>Mi perfil</h1><p>Información almacenada en PostgreSQL y selección de objetivo.</p></div></div><div class="tf-two-col"><article class="tf-card"><div class="tf-profile-top"><div class="tf-avatar big">{{nombre.charAt(0).toUpperCase()}}</div><div><h2>{{usuario?.nombres}} {{usuario?.apellidos}}</h2><p>{{usuario?.email}}</p><span class="tf-chip">{{nivelEtiqueta}}</span></div></div><dl class="tf-profile-data"><dt>Edad</dt><dd>{{usuario?.edad ?? '—'}} años</dd><dt>Peso</dt><dd>{{usuario?.peso ?? '—'}} kg</dd><dt>Altura</dt><dd>{{usuario?.altura ?? '—'}} m</dd><dt>Equipo</dt><dd>{{usuario?.equipo || 'Sin indicar'}}</dd><dt>Usuario</dt><dd>#{{idUsuario}}</dd></dl></article><article class="tf-card"><h2>Actualizar objetivo</h2><p class="tf-subtle">El cambio se guarda mediante <code>PUT /api/usuarios/{{idUsuario}}/objetivo</code>.</p><div class="tf-fields"><label>Objetivo actual / nuevo<select [(ngModel)]="objetivoElegido"><option [ngValue]="0">Seleccionar objetivo</option><option *ngFor="let obj of objetivos" [ngValue]="obj.idObjetivo">{{obj.nombreObjetivo}}</option></select></label><button type="button" class="tf-btn tf-btn-primary" (click)="guardarObjetivo()" [disabled]="!objetivoElegido || cargando['guardarObjetivo']">Guardar objetivo</button><p class="tf-error" *ngIf="errores['guardarObjetivo'] || errores['objetivos']">{{errores['guardarObjetivo']||errores['objetivos']}}</p></div><div class="tf-divider"></div><a routerLink="/panel" class="tf-btn tf-btn-outline">Abrir panel de registros →</a></article></div></section>

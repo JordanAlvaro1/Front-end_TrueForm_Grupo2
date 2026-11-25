@@ -13,6 +13,8 @@ import { RegistroEntrenamientoService } from '../../servicios/registro-entrenami
 import { EjercicioService } from '../../servicios/ejercicio.service';
 import { TrueformApiService } from '../../servicios/trueform-api.service';
 import { FuncionesTrueFormService } from '../../servicios/funciones-trueform.service';
+import { AuthService } from '../../servicios/auth.service';
+import { VideoEducativoDTO, VideoEducativoService } from '../../servicios/video-educativo.service';
 import {
   AjusteRutinaDTO, CalendarioDTO, ComparacionMensualDTO, EjercicioGuiadoDTO, FavoritoDTO,
   GlosarioDTO, HistorialProgresoDTO, IaResponseDTO, ProgresoSemanalDTO, RecomendacionAvanzadaDTO,
@@ -29,6 +31,7 @@ type Vista = 'inicio'|'gestion'|'cambios'|'rutinas'|'calendario'|'progreso'|'eje
   templateUrl:'./espacio.html',styleUrl:'./espacio.css'
 })
 export class Espacio implements OnInit {
+  private auth = inject(AuthService);
   private cd = inject(ChangeDetectorRef);
   private router = inject(Router);
   private api = inject(TrueformApiService);
@@ -37,6 +40,7 @@ export class Espacio implements OnInit {
   private apiProgreso = inject(ProgresoService);
   private apiRegistros = inject(RegistroEntrenamientoService);
   private apiEjercicios = inject(EjercicioService);
+  private apiVideos = inject(VideoEducativoService);
 
   idUsuario = 0;
   usuario: UsuarioDTO | null = null;
@@ -63,6 +67,7 @@ export class Espacio implements OnInit {
   recomendacionAvanzada: RecomendacionAvanzadaDTO | null = null;
   ajuste: AjusteRutinaDTO | null = null;
   tips: TipDTO[] = [];
+  videosPublicados: VideoEducativoDTO[] = [];
   glosario: GlosarioDTO | null = null;
   respuestaIA: IaResponseDTO | null = null;
   alternativas: EjercicioDTO[] = [];
@@ -227,6 +232,7 @@ export class Espacio implements OnInit {
     if(v==='ejercicios')this.cargarEjerciciosYFavoritos();
     if(v==='recomendaciones')this.cargarRecomendaciones();
     if(v==='tips')this.pedir('tips',this.funciones.tipsDelDia(),t=>this.tips=t);
+    if(v==='tecnica')this.cargarVideos();
     if(v==='perfil')this.pedir('objetivos',this.funciones.objetivos(),o=>this.objetivos=o);
   }
   private cargarInicioIntermedio():void {
@@ -413,6 +419,18 @@ export class Espacio implements OnInit {
     this.ejercicioAlternativas=e.nombreEjercicio;
     this.pedir('alternativas',this.funciones.alternativas(e.idEjercicio),a=>this.alternativas=a);
   }
+  // Compartida por principiante, intermedio y avanzado. JWT viaja por el interceptor.
+  cargarVideos():void {
+    this.videosPublicados=[];
+    const nivelActual = this.nivel.toUpperCase();
+    const nivel = nivelActual === 'INTERMEDIO' || nivelActual === 'AVANZADO'
+      ? nivelActual
+      : 'PRINCIPIANTE';
+    this.pedir('videos', this.apiVideos.listarPublicados(nivel), videos => {
+      this.videosPublicados = videos;
+    });
+  }
+
   buscarTermino():void {
     if(!this.consultaGlosario.trim())return;
     this.glosario=null;this.pedir('glosario',this.funciones.buscarGlosario(this.consultaGlosario.trim()),r=>this.glosario=r);
@@ -435,5 +453,5 @@ export class Espacio implements OnInit {
     if(!this.objetivoElegido)return;
     this.pedir('guardarObjetivo',this.funciones.cambiarObjetivo(this.idUsuario,Number(this.objetivoElegido)),()=>{this.aviso='Objetivo guardado en PostgreSQL.';this.pedir('usuario',this.api.buscarUsuario(this.idUsuario),u=>this.usuario=u);});
   }
-  salir():void {for(const key of ['idUsuario','usuarioActual','nombreUsuario','nivelUsuario'])localStorage.removeItem(key);void this.router.navigateByUrl('/login');}
+  salir():void {this.auth.cerrarSesion();void this.router.navigateByUrl('/login');}
 }

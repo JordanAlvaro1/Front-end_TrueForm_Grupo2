@@ -16,6 +16,7 @@ import { EjercicioService } from '../../servicios/ejercicio.service';
 import { RutinaService } from '../../servicios/rutina.service';
 import { ProgresoService } from '../../servicios/progreso.service';
 import { RegistroEntrenamientoService } from '../../servicios/registro-entrenamiento.service';
+import { AuthService } from '../../servicios/auth.service';
 
 @Component({
   selector: 'app-panel', standalone: true,
@@ -24,6 +25,7 @@ import { RegistroEntrenamientoService } from '../../servicios/registro-entrenami
   templateUrl: './panel.html', styleUrl: './panel.css'
 })
 export class Panel implements OnInit {
+  private auth = inject(AuthService);
   private cd = inject(ChangeDetectorRef);
   private router = inject(Router);
   private api = inject(TrueformApiService);
@@ -134,8 +136,7 @@ export class Panel implements OnInit {
     });
   }
   cerrarDemo(): void {
-    localStorage.removeItem('idUsuario');localStorage.removeItem('usuarioActual');
-    localStorage.removeItem('nombreUsuario');localStorage.removeItem('nivelUsuario');
+    this.auth.cerrarSesion();
     this.router.navigateByUrl('/login');
   }
   private refrescarRutinas(): void {this.rutinasApi.listarPorUsuario(this.idUsuario).pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({next: datos=>this.rutinas=datos,error:e=>this.errores.push(this.mensajeError('rutinas',e.status))});}

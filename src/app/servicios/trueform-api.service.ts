@@ -10,15 +10,12 @@ export type { ObjetivoDTO, RegistroUsuarioDTO, UsuarioDTO } from '../model/truef
 export class TrueformApiService {
   private readonly http = inject(HttpClient);
   // IMPORTANTE: URL relativa. angular.json + proxy.conf.json envían /api a Spring Boot :8080.
-  // No se usa JWT, sesión HTTP ni CSRF. Solo para pruebas locales de clase.
+  // Angular utiliza JWT a través de AuthService y el interceptor HTTP.
   objetivos(): Observable<ObjetivoDTO[]> {
     return this.http.get<ObjetivoDTO[]>('/api/objetivos');
   }
   registrar(datos: RegistroUsuarioDTO): Observable<UsuarioDTO> {
     return this.http.post<UsuarioDTO>('/api/usuarios', datos);
-  }
-  iniciarSesion(email: string, password: string): Observable<UsuarioDTO> {
-    return this.http.post<UsuarioDTO>('/api/auth/login', { email, password });
   }
   buscarUsuario(idUsuario: number): Observable<UsuarioDTO> {
     return this.http.get<UsuarioDTO>(`/api/usuarios/${idUsuario}`);
