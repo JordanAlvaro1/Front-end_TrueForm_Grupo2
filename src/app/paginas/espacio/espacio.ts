@@ -195,12 +195,12 @@ export class Espacio implements OnInit {
 
   private mensajeError(e:unknown):string {
     const err=e as {name?:string;status?:number;error?:{mensaje?:string}};
-    if(err?.name==='TimeoutError')return 'La API tardó más de 18 segundos. Comprueba IntelliJ antes de repetir la operación.';
-    if(err?.status===0 || err?.status===502 || err?.status===504)return 'No se pudo contactar con Spring Boot. Verifica localhost:8080 y el proxy.';
+    if(err?.name==='TimeoutError')return 'La operación está tardando más de lo esperado. Inténtalo nuevamente en unos momentos.';
+    if(err?.status===0 || err?.status===502 || err?.status===504)return 'No pudimos conectar con el servicio. Comprueba tu conexión e inténtalo más tarde.';
     if(err?.status===404)return 'No se encontraron datos para esta consulta.';
     if(err?.status===409)return 'El registro ya existe o tiene relaciones que impiden esta operación.';
     if(err?.status===422)return 'No hay datos suficientes para generar este informe.';
-    return err?.error?.mensaje || `La consulta falló (HTTP ${err?.status ?? 'desconocido'}). Revisa IntelliJ.`;
+    return err?.error?.mensaje || 'No pudimos completar la solicitud. Inténtalo nuevamente.';
   }
   private pedir<T>(clave:string,operacion:Observable<T>,ok:(v:T)=>void):void {
     this.cargando[clave]=true;delete this.errores[clave];this.cd.markForCheck();
@@ -275,12 +275,12 @@ export class Espacio implements OnInit {
       this.errores['planLocal']='Selecciona un ejercicio y usa cargas válidas (meta mayor que 0).';return;
     }
     delete this.errores['planLocal'];
-    try {localStorage.setItem(this.planKey,JSON.stringify(this.planAvanzado));this.planGuardadoLocal=true;this.aviso='Borrador de progresión guardado SOLO en este navegador (no en PostgreSQL).';}
-    catch {this.errores['planLocal']='No fue posible almacenar el borrador en este navegador.';}
+    try {localStorage.setItem(this.planKey,JSON.stringify(this.planAvanzado));this.planGuardadoLocal=true;this.aviso='Plan de progresión guardado en este dispositivo. No se sincroniza con otros dispositivos.';}
+    catch {this.errores['planLocal']='No se pudo guardar el plan en este dispositivo.';}
   }
   borrarPlanAvanzadoLocal():void {
     localStorage.removeItem(this.planKey);this.planAvanzado={idEjercicio:0,cargaActual:0,cargaObjetivo:0,semana1:'',semana2:'',semana3:'',semana4:''};
-    this.planGuardadoLocal=false;this.aviso='Borrador local eliminado.';
+    this.planGuardadoLocal=false;this.aviso='Plan guardado eliminado de este dispositivo.';
   }
   prepararVolumen(id:number):void {
     this.volumenSeleccionadoId=Number(id);this.errorVolumen='';
@@ -293,10 +293,10 @@ export class Espacio implements OnInit {
       !Number.isInteger(Number(this.repeticionesVolumen)) || Number(this.repeticionesVolumen)<1 || Number(this.repeticionesVolumen)>1000){
       this.errorVolumen='Selecciona un ejercicio y configura entre 1–100 series y 1–1000 repeticiones.';return;
     }
-    if(!confirm('¿Guardar el ajuste de series y repeticiones de esta rutina en PostgreSQL?'))return;
+    if(!confirm('¿Guardar los cambios de series y repeticiones de esta rutina?'))return;
     this.errorVolumen='';
     this.pedir('guardarVolumen',this.funciones.modificarEjercicio({...original,series:Number(this.seriesVolumen),repeticiones:Number(this.repeticionesVolumen)}),()=>{
-      this.aviso='Volumen del ejercicio actualizado en PostgreSQL.';
+      this.aviso='¡Series y repeticiones actualizadas correctamente!';
       const idRutina=this.rutinaSeleccionada;this.seleccionarRutina(idRutina);
       this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),r=>this.rutinaSemanal=r);
     });
@@ -320,7 +320,7 @@ export class Espacio implements OnInit {
       idUsuario:this.idUsuario,nombreRutina:this.rutinaNueva.nombreRutina.trim(),descripcion:this.rutinaNueva.descripcion.trim(),
       fechaInicio:this.rutinaNueva.fechaInicio,fechaFin:this.rutinaNueva.fechaFin||null,estado:this.rutinaNueva.estado.trim()
     }),r=>{
-      this.aviso=`Rutina «${r.nombreRutina}» creada en PostgreSQL.`;
+      this.aviso=`Rutina «${r.nombreRutina}» creada correctamente.`;
       this.rutinaNueva={nombreRutina:'',descripcion:'',fechaInicio:this.hoy(),fechaFin:'',estado:'activa'};
       this.pedir('rutinas',this.apiRutinas.listarPorUsuario(this.idUsuario),items=>{this.rutinas=items;this.seleccionarRutina(r.idRutina);});
       this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),sem=>this.rutinaSemanal=sem);
@@ -333,7 +333,7 @@ export class Espacio implements OnInit {
       ...original,nombreRutina:this.rutinaEdicion.nombreRutina.trim(),descripcion:this.rutinaEdicion.descripcion.trim(),
       fechaInicio:this.rutinaEdicion.fechaInicio,fechaFin:this.rutinaEdicion.fechaFin||null,estado:this.rutinaEdicion.estado.trim()
     }),r=>{
-      this.aviso=`Rutina «${r.nombreRutina}» modificada en PostgreSQL.`;
+      this.aviso=`Rutina «${r.nombreRutina}» actualizada correctamente.`;
       this.rutinas=this.rutinas.map(item=>item.idRutina===r.idRutina?r:item);
       this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),sem=>this.rutinaSemanal=sem);
     });
@@ -350,7 +350,7 @@ export class Espacio implements OnInit {
     if(!asignado || !reemplazo || asignado.idEjercicio===reemplazo.idEjercicio)return;
     if(!confirm(`¿Reemplazar «${this.nombreDeEjercicio(asignado.idEjercicio)}» por «${reemplazo.nombreEjercicio}»?`))return;
     this.pedir('cambioEjercicio',this.funciones.modificarEjercicio({...asignado,idEjercicio:reemplazo.idEjercicio}),()=>{
-      this.aviso=`Ejercicio sustituido por «${reemplazo.nombreEjercicio}» y guardado en PostgreSQL.`;
+      this.aviso=`Ejercicio sustituido por «${reemplazo.nombreEjercicio}» correctamente.`;
       this.seleccionarRutina(this.rutinaSeleccionada);
       this.pedir('semanal',this.funciones.rutinaSemanal(this.idUsuario),r=>this.rutinaSemanal=r);
     });
@@ -446,12 +446,12 @@ export class Espacio implements OnInit {
   exportar():void {
     this.pedir('exportar',this.funciones.exportarCsv(this.idUsuario),blob=>{
       const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`progreso-${this.idUsuario}.csv`;
-      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);this.aviso='CSV descargado desde la API.';
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);this.aviso='¡Tu informe se descargó correctamente!';
     });
   }
   guardarObjetivo():void {
     if(!this.objetivoElegido)return;
-    this.pedir('guardarObjetivo',this.funciones.cambiarObjetivo(this.idUsuario,Number(this.objetivoElegido)),()=>{this.aviso='Objetivo guardado en PostgreSQL.';this.pedir('usuario',this.api.buscarUsuario(this.idUsuario),u=>this.usuario=u);});
+    this.pedir('guardarObjetivo',this.funciones.cambiarObjetivo(this.idUsuario,Number(this.objetivoElegido)),()=>{this.aviso='¡Objetivo actualizado correctamente!';this.pedir('usuario',this.api.buscarUsuario(this.idUsuario),u=>this.usuario=u);});
   }
   salir():void {this.auth.cerrarSesion();void this.router.navigateByUrl('/login');}
 }

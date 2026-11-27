@@ -49,15 +49,15 @@
       @if (seccion() === 'resumen') {
         <div class="page-heading"><div><span class="eyebrow">CENTRO DE OPERACIONES</span><h1>Panel administrativo</h1><p>Gestiona ejercicios, glosario, consejos y videos educativos, y consulta los usuarios registrados en TrueForm.</p></div></div>
         <div class="hero-admin">
-          <div><span class="hero-kicker">TRUEFORM · CONTROL DE PLATAFORMA</span><h2>Bienvenido al área administrativa</h2><p>Los indicadores que ves aquí se obtienen directamente de la API. Las operaciones de edición están restringidas por Spring Security.</p></div>
+          <div><span class="hero-kicker">TRUEFORM · CONTROL DE PLATAFORMA</span><h2>Bienvenido al área administrativa</h2><p>Consulta el estado de la plataforma y administra los contenidos disponibles para los usuarios.</p></div>
           <span class="hero-icon" aria-hidden="true">◆</span>
         </div>
         <div class="stats-grid six-cols">
-          <div class="stat-card"><span>Usuarios registrados</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuarios().length }}</strong><small>Consultados desde /api/usuarios</small></div>
-          <div class="stat-card"><span>Ejercicios en catálogo</span><strong>{{ cargandoEjercicios() || errorEjercicios() ? '—' : ejercicios().length }}</strong><small>Consultados desde /api/ejercicios</small></div>
+          <div class="stat-card"><span>Usuarios registrados</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuarios().length }}</strong><small>Cuentas en la plataforma</small></div>
+          <div class="stat-card"><span>Ejercicios en catálogo</span><strong>{{ cargandoEjercicios() || errorEjercicios() ? '—' : ejercicios().length }}</strong><small>Ejercicios disponibles</small></div>
           <div class="stat-card"><span>Usuarios intermedios</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuariosPorNivel().intermedio }}</strong><small>Según los registros actuales</small></div>
-          <div class="stat-card"><span>Términos activos</span><strong>{{ cargandoGlosario() || errorGlosario() ? '—' : terminosActivos() }}</strong><small>Glosario de PostgreSQL</small></div>
-          <div class="stat-card"><span>Consejos activos</span><strong>{{ cargandoConsejos() || errorConsejos() ? '—' : consejosActivos() }}</strong><small>Tips dinámicos en PostgreSQL</small></div>
+          <div class="stat-card"><span>Términos activos</span><strong>{{ cargandoGlosario() || errorGlosario() ? '—' : terminosActivos() }}</strong><small>Conceptos de entrenamiento</small></div>
+          <div class="stat-card"><span>Consejos activos</span><strong>{{ cargandoConsejos() || errorConsejos() ? '—' : consejosActivos() }}</strong><small>Consejos disponibles</small></div>
           <div class="stat-card"><span>Videos publicados</span><strong>{{ cargandoVideos() || errorVideos() ? '—' : videosActivos() }}</strong><small>Biblioteca educativa</small></div>
         </div>
         @if (errorUsuarios()) { <div class="message error" role="alert">Usuarios: {{ errorUsuarios() }}</div> }
@@ -98,7 +98,7 @@
         }
         <section class="panel">
           <div class="panel-title responsive-title"><h2>Ejercicios registrados <span class="small-count">{{ ejerciciosVisibles().length }}</span></h2><input class="search-input" type="search" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" placeholder="Buscar nombre, grupo o equipo" aria-label="Buscar ejercicios"></div>
-          @if (cargandoEjercicios()) { <p class="empty-message">Consultando los ejercicios de la API…</p> }
+          @if (cargandoEjercicios()) { <p class="empty-message">Cargando ejercicios…</p> }
           @else if (ejerciciosVisibles().length === 0) { <p class="empty-message">No hay ejercicios que coincidan con la búsqueda.</p> }
           @else {
             <div class="table-scroll"><table><thead><tr><th>ID</th><th>Ejercicio</th><th>Grupo muscular</th><th>Equipo</th><th>Acciones</th></tr></thead><tbody>
@@ -172,7 +172,7 @@
           </div>
 
           @if (cargandoGlosario()) {
-            <p class="empty-message">Consultando los términos de PostgreSQL…</p>
+            <p class="empty-message">Cargando términos…</p>
           } @else if (terminosVisibles().length === 0) {
             <p class="empty-message">No hay términos que coincidan con la búsqueda.</p>
           } @else {
@@ -277,7 +277,7 @@
           </div>
 
           @if (cargandoConsejos()) {
-            <p class="empty-message">Consultando los consejos de PostgreSQL…</p>
+            <p class="empty-message">Cargando consejos…</p>
           } @else if (consejosVisibles().length === 0) {
             <p class="empty-message">No hay consejos que coincidan con tu búsqueda.</p>
           } @else {
@@ -393,7 +393,7 @@
           </div>
 
           @if (cargandoVideos()) {
-            <p class="empty-message">Consultando la biblioteca de PostgreSQL…</p>
+            <p class="empty-message">Cargando videos…</p>
           } @else if (videosVisibles().length === 0) {
             <p class="empty-message">No hay videos que coincidan con la búsqueda.</p>
           } @else {
@@ -444,7 +444,7 @@
           <div class="stat-card"><span>Avanzados</span><strong>{{ cargandoUsuarios() || errorUsuarios() ? '—' : usuariosPorNivel().avanzado }}</strong></div>
         </div>
         <section class="panel"><div class="panel-title"><h2>Listado de usuarios</h2></div>
-          @if (cargandoUsuarios()) { <p class="empty-message">Consultando usuarios de la API…</p> }
+          @if (cargandoUsuarios()) { <p class="empty-message">Cargando usuarios…</p> }
           @else if (usuarios().length === 0) { <p class="empty-message">No hay usuarios registrados para mostrar.</p> }
           @else { <div class="table-scroll"><table><thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Nivel</th></tr></thead><tbody>
             @for (u of usuarios(); track u.idUsuario) { <tr><td class="muted-cell">#{{ u.idUsuario }}</td><td><strong>{{ u.nombres }} {{ u.apellidos }}</strong></td><td>{{ u.email }}</td><td><span class="level-badge">{{ u.nivel }}</span></td></tr> }

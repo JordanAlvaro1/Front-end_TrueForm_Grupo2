@@ -4,5 +4,5 @@ import { Component } from '@angular/core';
 export class Contacto {
    menuAbierto = false;
    toggleMenu(): void { this.menuAbierto = !this.menuAbierto; }
-   enviarContacto(event: Event): void { event.preventDefault(); alert('Formulario de contacto de demostración. Aún no existe un endpoint de contacto en la API.'); }
+   enviarContacto(event: Event): void { event.preventDefault(); alert('El formulario de contacto todavía no está disponible. Por favor, utiliza otro medio para escribirnos.'); }
 }

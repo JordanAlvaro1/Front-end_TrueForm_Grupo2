@@ -12,7 +12,7 @@ export class Registro implements OnInit {
  equipos=['Sin equipo','Mancuernas','Bandas elásticas','Barra y discos','Máquinas de gimnasio','Equipo completo'];
  objetivos:ObjetivoDTO[]=[];
  datos:RegistroUsuarioDTO={nombres:'',apellidos:'',email:'',password:'',edad:18,peso:70,altura:1.7,nivel:'',idObjetivo:0,equipo:''};
- ngOnInit():void {this.api.objetivos().pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({next:o=>this.objetivos=o,error:()=>{this.error=true;this.mensaje='No se pudieron cargar los objetivos desde la API.';}});}
+ ngOnInit():void {this.api.objetivos().pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({next:o=>this.objetivos=o,error:()=>{this.error=true;this.mensaje='No pudimos cargar los objetivos. Inténtalo nuevamente más tarde.';}});}
  toggleMenu():void{this.menuAbierto=!this.menuAbierto;}
  registrar(event:Event):void {
   event.preventDefault();this.mensaje='';this.error=false;
@@ -23,11 +23,11 @@ export class Registro implements OnInit {
    next:()=>{this.procesando=false;this.router.navigateByUrl('/login');},
    error:e=>{
     this.procesando=false;this.error=true;
-    this.mensaje=e.name==='TimeoutError'?'La API tardó demasiado. Comprueba si el usuario se registró antes de intentarlo otra vez.':
+    this.mensaje=e.name==='TimeoutError'?'La solicitud está tardando más de lo normal. Comprueba si tu cuenta se creó antes de volver a intentarlo.':
       e.status===409?'Ya existe un usuario con ese correo.':
       e.status===400?'Datos inválidos. Revisa campos, contraseña y objetivo.':
-      e.status===0?'No hay conexión con el backend en localhost:8080.':
-      'Error HTTP '+e.status+'. Revisa los datos y la consola de IntelliJ.';
+      e.status===0?'No pudimos conectar con el servicio. Inténtalo más tarde.':
+      'No se pudo crear tu cuenta. Comprueba los datos e inténtalo de nuevo.';
    }
   });
  }

@@ -70,6 +70,11 @@
 .form-card mat-card-header {padding:0 0 8px}
 .form-card mat-card-title {font-size:1.14rem;font-weight:800;color:#124b4b;letter-spacing:-.2px;margin:0}
 .form-card mat-card-content {padding:0!important}
+.form-intro {margin:8px 0 16px;color:var(--tf-muted);font-size:.94rem;line-height:1.65;max-width:700px}
+.form-rutina {border-color:#c4e4db!important;background:linear-gradient(180deg,#ffffff 0%,#fcfffe 100%)}
+.form-rutina mat-card-title {font-size:1.3rem;letter-spacing:-.35px}
+.form-rutina .form-grid {gap:12px 18px}
+.form-rutina .guardar {min-width:175px}
 .form-grid {margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:10px 16px}
 .form-grid mat-form-field {width:100%;min-width:0;--mdc-outlined-text-field-outline-color:#c8ddda;--mdc-outlined-text-field-hover-outline-color:#359a8c;--mdc-outlined-text-field-focus-outline-color:#0b8880;--mdc-outlined-text-field-label-text-color:#51706f;--mdc-outlined-text-field-focus-label-text-color:#0b8880;--mat-form-field-container-height:52px;--mat-form-field-container-vertical-padding:13px}
 .form-grid .largo {grid-column:1/-1}

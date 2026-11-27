@@ -2,7 +2,7 @@
   <header class="av-hero">
     <div>
       <span class="av-eyebrow">TRUEFORM · ENTRENAMIENTO AVANZADO</span>
-      <h1>Tu rendimiento, con datos reales.</h1>
+      <h1>Tu progreso, en un solo lugar.</h1>
       <p>{{ nombre }}, revisa tus cargas, historial y recuperación antes de ajustar el siguiente objetivo.</p>
       <div class="av-actions">
         <button type="button" class="av-btn av-primary" (click)="navegarA('progresion')">Ver plan de progresión →</button>
@@ -13,8 +13,8 @@
   </header>
 
   <div class="av-metrics">
-    <article><span class="av-icon">▦</span><small>Días con entrenamientos registrados</small><strong>{{ diasRegistrados }}</strong><em>Fechas distintas en la API</em></article>
-    <article><span class="av-icon">↗</span><small>Cumplimiento promedio</small><strong>{{ cumplimiento === null ? '—' : ((cumplimiento | number:'1.0-0') + '%') }}</strong><em>Resumen calculado en el backend</em></article>
+    <article><span class="av-icon">▦</span><small>Días con entrenamientos registrados</small><strong>{{ diasRegistrados }}</strong><em>Días de actividad registrados</em></article>
+    <article><span class="av-icon">↗</span><small>Cumplimiento promedio</small><strong>{{ cumplimiento === null ? '—' : ((cumplimiento | number:'1.0-0') + '%') }}</strong><em>Según tus progresos registrados</em></article>
     <article><span class="av-icon">▤</span><small>Rutinas creadas</small><strong>{{ rutinas.length }}</strong><em>Planes asociados a tu cuenta</em></article>
     <article><span class="av-icon">◇</span><small>Volumen acumulado registrado</small><strong>{{ volumenRegistrado | number:'1.0-0' }}</strong><em>kg × repeticiones, sumados por serie</em></article>
   </div>
@@ -22,13 +22,13 @@
   <div class="av-columns">
     <article class="av-panel">
       <div class="av-head"><div><span class="av-kicker">PLAN DE PROGRESIÓN</span><h2>Actividad reciente</h2></div><button type="button" (click)="navegarA('historial')">Historial →</button></div>
-      <p>Registros reales de ejercicios. Tu plan de cuatro semanas puede editarse en la sección de progresión.</p>
+      <p>Consulta tus entrenamientos y ajusta tu planificación en la sección de progresión.</p>
       <div *ngFor="let r of registrosRecientes" class="av-entry"><div><strong>{{r.nombreEjercicio}}</strong><small>{{r.fecha}} · {{r.nombreRutina}}</small></div><b>{{r.series}} × {{r.repeticiones}} · {{r.pesoKg}} kg</b></div>
       <p *ngIf="!registrosRecientes.length" class="av-empty">Todavía no existen registros de ejercicios. Registra tus entrenamientos desde el panel para visualizar tendencias.</p>
       <button type="button" class="av-btn av-dark av-full" (click)="navegarA('progresion')">Revisar progresión →</button>
     </article>
     <article class="av-panel">
-      <div class="av-head"><div><span class="av-kicker">RECOMENDACIONES DESDE API</span><h2>Análisis avanzado</h2></div><button type="button" (click)="navegarA('recomendaciones')">Detalle →</button></div>
+      <div class="av-head"><div><span class="av-kicker">RECOMENDACIONES PARA TI</span><h2>Análisis avanzado</h2></div><button type="button" (click)="navegarA('recomendaciones')">Detalle →</button></div>
       <p *ngIf="!recomendacion?.datosSuficientes">{{recomendacion?.mensaje || 'Se requieren registros de progreso para obtener recomendaciones personalizadas.'}}</p>
       <dl class="av-factors" *ngIf="recomendacion?.datosSuficientes">
         <dt>Intensidad</dt><dd>{{recomendacion?.intensidad || 'Sin datos'}}</dd>
@@ -43,15 +43,15 @@
     </article>
   </div>
 
-  <div class="av-section-title"><div><span class="av-kicker">HERRAMIENTAS</span><h2>Tu centro de análisis</h2></div><p>El IHC original, integrado con funciones reales del backend.</p></div>
+  <div class="av-section-title"><div><span class="av-kicker">HERRAMIENTAS</span><h2>Tu centro de análisis</h2></div><p>Herramientas para analizar tus resultados y planificar nuevos objetivos.</p></div>
   <div class="av-shortcuts">
-    <button type="button" (click)="navegarA('progresion')"><span>↗</span><strong>Plan de progresión</strong><small>Historial de cargas y borrador local</small></button>
-    <button type="button" (click)="navegarA('comparar')"><span>▥</span><strong>Comparar rendimiento</strong><small>Compara dos meses en la API</small></button>
+    <button type="button" (click)="navegarA('progresion')"><span>↗</span><strong>Plan de progresión</strong><small>Revisa tus cargas y planifica tus semanas</small></button>
+    <button type="button" (click)="navegarA('comparar')"><span>▥</span><strong>Comparar rendimiento</strong><small>Compara tu evolución entre meses</small></button>
     <button type="button" (click)="navegarA('historial')"><span>◷</span><strong>Historial físico</strong><small>Progresos y entrenamientos</small></button>
-    <button type="button" (click)="navegarA('volumen')"><span>≡</span><strong>Ajustar volumen</strong><small>Edita series y repeticiones (PUT)</small></button>
+    <button type="button" (click)="navegarA('volumen')"><span>≡</span><strong>Ajustar volumen</strong><small>Personaliza series y repeticiones</small></button>
     <button type="button" (click)="navegarA('tecnica')"><span>▷</span><strong>Técnica y videos</strong><small>Consulta recursos educativos</small></button>
-    <button type="button" (click)="navegarA('chat')"><span>◈</span><strong>Chat IA</strong><small>Utiliza Gemini mediante la API</small></button>
-    <button type="button" (click)="navegarA('exportar')"><span>⇩</span><strong>Exportar progreso</strong><small>CSV generado por Spring Boot</small></button>
+    <button type="button" (click)="navegarA('chat')"><span>◈</span><strong>Chat IA</strong><small>Consulta tus dudas de entrenamiento</small></button>
+    <button type="button" (click)="navegarA('exportar')"><span>⇩</span><strong>Exportar progreso</strong><small>Descarga tu historial de progreso</small></button>
     <button type="button" (click)="navegarA('rutinas')"><span>▤</span><strong>Rutinas y ejercicios</strong><small>Conserva tus planes y favoritos</small></button>
     <button type="button" (click)="navegarA('calendario')"><span>▦</span><strong>Calendario</strong><small>Programar entrenamientos</small></button>
     <button type="button" (click)="navegarA('glosario')"><span>A</span><strong>Glosario</strong><small>Conceptos técnicos</small></button>

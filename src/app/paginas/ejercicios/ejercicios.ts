@@ -36,9 +36,9 @@ export class Ejercicios implements OnInit, AfterViewInit {
     this.error = '';
     this.api.listar().pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({
       next: ejercicios => { this.datos.data = ejercicios; this.cargando = false; },
-      error: e => { this.cargando = false; this.error = e.name === 'TimeoutError' ? 'La API tardó más de 20 segundos en responder.' : e.status === 0 || e.status === 502 || e.status === 504
-        ? 'No se encontró la API. Comprueba IntelliJ, PostgreSQL y el proxy.'
-        : `Error HTTP ${e.status} al consultar /api/ejercicios.`; }
+      error: e => { this.cargando = false; this.error = e.name === 'TimeoutError' ? 'La carga está tardando más de lo normal. Inténtalo de nuevo.' : e.status === 0 || e.status === 502 || e.status === 504
+        ? 'No pudimos cargar los ejercicios. Inténtalo más tarde.'
+        : `No pudimos mostrar los ejercicios en este momento.`; }
     });
   }
   filtrar(event: Event): void {

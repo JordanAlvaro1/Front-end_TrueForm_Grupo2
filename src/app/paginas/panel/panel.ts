@@ -102,7 +102,7 @@ export class Panel implements OnInit {
       estado: this.nuevaRutina.estado
     }).pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({
       next: () => { this.guardandoRutina = false; this.nuevaRutina.nombreRutina=''; this.nuevaRutina.descripcion='';
-        this.aviso='Rutina guardada en PostgreSQL.'; this.refrescarRutinas(); },
+        this.aviso='¡Rutina creada correctamente!'; this.refrescarRutinas(); },
       error: e => {this.guardandoRutina=false;this.aviso=this.mensajeError('guardar rutina',e.status);}
     });
   }
@@ -116,7 +116,7 @@ export class Panel implements OnInit {
       porcentajeCumplimiento: this.nuevoProgreso.porcentajeCumplimiento,
       observaciones: this.nuevoProgreso.observaciones
     }).pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({
-      next: () => { this.guardandoProgreso=false; this.aviso='Progreso guardado en PostgreSQL.'; this.refrescarProgresos(); },
+      next: () => { this.guardandoProgreso=false; this.aviso='¡Progreso guardado correctamente!'; this.refrescarProgresos(); },
       error: e => { this.guardandoProgreso=false; this.aviso=this.mensajeError('guardar progreso',e.status); }
     });
   }
@@ -131,7 +131,7 @@ export class Panel implements OnInit {
       repeticiones: Number(this.nuevoRegistro.repeticiones),
       pesoKg: Number(this.nuevoRegistro.pesoKg)
     }).pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({
-      next: () => {this.guardandoRegistro=false;this.aviso='Entrenamiento guardado en PostgreSQL.';this.refrescarRegistros();},
+      next: () => {this.guardandoRegistro=false;this.aviso='¡Entrenamiento registrado correctamente!';this.refrescarRegistros();},
       error: e => {this.guardandoRegistro=false;this.aviso=this.mensajeError('guardar entrenamiento',e.status);}
     });
   }
@@ -143,8 +143,8 @@ export class Panel implements OnInit {
   private refrescarProgresos(): void {this.progresosApi.listarPorUsuario(this.idUsuario).pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({next: datos=>this.progresos=datos,error:e=>this.errores.push(this.mensajeError('progresos',e.status))});}
   private refrescarRegistros(): void {this.registrosApi.listarPorUsuario(this.idUsuario).pipe(timeout(20000), finalize(() => this.cd.markForCheck())).subscribe({next: datos=>this.registros=datos,error:e=>this.errores.push(this.mensajeError('registros',e.status))});}
   private mensajeError(operacion: string, status: number): string {
-    if (status === undefined) return `La API no respondió en 20 segundos al ${operacion}. Comprueba si se guardó antes de repetir la operación.`;
-    if (status === 0 || status === 502 || status === 504) return `No se pudo contactar la API al ${operacion}. Revisa el backend y el proxy.`;
-    return `Error HTTP ${status} al ${operacion}. Revisa el detalle en IntelliJ.`;
+    if (status === undefined) return `La operación está tardando más de lo normal. Revisa si se guardaron tus cambios antes de volver a intentarlo.`;
+    if (status === 0 || status === 502 || status === 504) return `No pudimos completar la operación. Comprueba tu conexión e inténtalo más tarde.`;
+    return `No se pudo completar la operación. Verifica los datos e inténtalo de nuevo.`;
   }
 }
