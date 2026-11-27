@@ -40,11 +40,11 @@ export class Login {
         },
         error: e => {
           this.procesando=false; this.error=true;
-          this.mensaje=e.name==='TimeoutError'?'La API tardó más de 20 segundos en responder.':
+          this.mensaje=e.name==='TimeoutError'?'El inicio de sesión está tardando más de lo esperado. Inténtalo nuevamente.':
             e.status===401?'Correo o contraseña incorrectos.':
-            e.status===0?'No se pudo conectar. Verifica Spring Boot en localhost:8080.':
+            e.status===0?'No pudimos conectar con el servicio. Revisa tu conexión e inténtalo de nuevo.':
             e.message==='La respuesta de autenticación es incompleta.'?e.message:
-            'No se pudo iniciar sesión (HTTP '+(e.status ?? 'desconocido')+'). Revisa IntelliJ y PostgreSQL.';
+            'No se pudo iniciar sesión. Inténtalo nuevamente más tarde.';
         }
       });
   }

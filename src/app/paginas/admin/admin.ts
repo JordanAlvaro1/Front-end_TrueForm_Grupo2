@@ -383,7 +383,7 @@ export class Admin implements OnInit {
       return;
     }
     if (categoria.length > 80 || titulo.length > 160 || contenido.length > 4000) {
-      this.errorFormularioConsejo.set('Un campo supera el límite permitido por la API.');
+      this.errorFormularioConsejo.set('Uno de los campos es demasiado largo. Revisa el formulario.');
       return;
     }
     if (!Number.isSafeInteger(ordenVisualizacion) || ordenVisualizacion < 1) {
@@ -428,7 +428,7 @@ export class Admin implements OnInit {
     peticion.pipe(finalize(() => this.cambiandoEstadoConsejo.set(null))).subscribe({
       next: () => {
         this.aviso.set(tip.activo
-          ? 'Consejo desactivado; permanece almacenado en PostgreSQL.'
+          ? 'Consejo desactivado correctamente.'
           : 'Consejo reactivado correctamente.');
         this.cargarConsejos();
       },
@@ -473,7 +473,7 @@ export class Admin implements OnInit {
       return;
     }
     if (termino.length > 120 || definicion.length > 4000 || categoria.length > 80) {
-      this.errorFormularioGlosario.set('Un campo supera la longitud permitida por la API.');
+      this.errorFormularioGlosario.set('Uno de los campos es demasiado largo. Revisa el formulario.');
       return;
     }
 
@@ -512,7 +512,7 @@ export class Admin implements OnInit {
 
     peticion.pipe(finalize(() => this.cambiandoEstadoTermino.set(null))).subscribe({
       next: () => {
-        this.aviso.set(t.activo ? 'Término desactivado. Sigue guardado en PostgreSQL.' : 'Término reactivado correctamente.');
+        this.aviso.set(t.activo ? 'Término desactivado correctamente.' : 'Término reactivado correctamente.');
         this.cargarGlosario();
       },
       error: (err: HttpErrorResponse) => this.errorGlosario.set(this.mensajeHttp(err))
@@ -637,12 +637,12 @@ export class Admin implements OnInit {
 
   private mensajeHttp(error: HttpErrorResponse): string {
     if (error.status === 0 || error.status === 502 || error.status === 504) {
-      return 'No se pudo conectar con la API. Comprueba IntelliJ y PostgreSQL.';
+      return 'No pudimos conectar con el servicio. Inténtalo más tarde.';
     }
     if (error.status === 401) return 'La sesión expiró. Vuelve a iniciar sesión.';
-    if (error.status === 403) return 'La API denegó esta operación: se requieren permisos ADMIN.';
+    if (error.status === 403) return 'No tienes permisos para realizar esta operación.';
     if (error.status === 404) return 'El recurso solicitado no existe.';
-    if (error.status === 400) return 'La API rechazó los datos. Revisa los campos del formulario.';
-    return `No se completó la operación (HTTP ${error.status}).`;
+    if (error.status === 400) return 'Los datos ingresados no son válidos. Revisa el formulario.';
+    return 'No se pudo completar la operación. Inténtalo de nuevo.';
   }
 }
